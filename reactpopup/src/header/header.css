@@ -1,0 +1,29 @@
+.header-container h1 {
+    font-size: x-large;
+}
+
+.header-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 10px;
+    color: var(--headertext);
+    background-color: var(--headerbg);
+    font-weight: 900;
+}
+
+.logo-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-container svg{
+    align-self: center;
+    fill: var(--svgcolor);
+}
+
+svg:hover, span:hover{
+    cursor: pointer;
+}

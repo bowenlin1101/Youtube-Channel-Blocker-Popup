@@ -1,0 +1,49 @@
+.channel-box {
+    margin: 20px 0px;
+}
+
+.channel-item{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.channel-text{
+    margin: 5px 0px;
+}
+
+.remove-channel-button{
+    width: 20px;
+    color: red;
+    display: flex;
+    pointer-events: all;
+    align-items: center;
+    flex-direction: row;
+}
+
+.remove-channel-button svg{
+    fill: aqua;
+    color: red;
+}
+
+.blocklist-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.list-container {
+    box-sizing: border-box;
+    display: flex;
+    border-top: 2px solid var(--bordercolor);
+    flex-grow: 2;
+    flex-direction: column;
+    max-height: 250px;
+    height: 100%;
+    width: 100%;
+    background-color: var(--listbg);
+    overflow-y: overlay;
+    scrollbar-width: 0px;
+}
+
+  

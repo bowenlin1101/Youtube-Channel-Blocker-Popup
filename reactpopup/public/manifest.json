@@ -1,0 +1,20 @@
+{
+  "name": "Channel Block List for Youtube",
+  "description": "Block distracting Youtube Channels",
+  "version": "1.92",
+  "manifest_version": 3,
+  "background": {
+    "service_worker":"background.js"
+  },
+  "icons": { 
+     "128": "new_128x128_logo.png" },
+  "content_scripts":
+  [{"matches": ["https://www.youtube.com/*"],
+    "js": ["contentScript.js"],
+    "all_frames": true
+    }],
+  "permissions": ["storage"],
+  "action": {
+      "default_popup": "index.html"
+  }
+}
