@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+/*global chrome*/
+import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import Authenticate from "./authenticate/authenticate.js"
@@ -9,6 +10,15 @@ import Modal from './modal/Modal.js'
 function Dashboard() {
   const [show, setShow] = useState(false);
   const [unlocked, setUnlocked] = useState(false)
+
+useEffect(() => {
+  chrome.storage.sync.get(['unlocked'], (result) => {
+    if(result.unlocked === undefined) {
+      chrome.storage.sync.set({unlocked: true})
+    }
+    setUnlocked(result.unlocked)
+  })
+},[])
 
   function showModal() {
     setShow(true)

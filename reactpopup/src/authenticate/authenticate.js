@@ -41,7 +41,7 @@ function Authenticate(props){
             if (passwordValue === "password"){
                 props.setUnlocked(true)
             } else {
-                setFailed(" autfailed")
+                setFailed(" shake")
             }
             setPasswordValue("")
         }
@@ -59,6 +59,7 @@ function Authenticate(props){
             <div className="authenticate-wrapper">
                 <p className='authenticate-text'>Enter password to change settings</p>
                 <div className='password-box-wrapper'>
+                    <div className='authenticate-offset'></div>
                     <PasswordBox unlocked={props.unlocked} failed={failed} value={passwordValue} setPasswordValue={(e) => handlePassword(e.target.value)}/>
                     <LockBox unlocked={props.unlocked} setUnlocked={(e) => props.setUnlocked(e)}/>
                 </div>

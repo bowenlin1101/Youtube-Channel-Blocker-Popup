@@ -5,25 +5,55 @@
 .channel-item{
     display: flex;
     flex-direction: row;
+    align-items: center;
     justify-content: space-between;
+    height: 40px;
+    margin-bottom: 10px;
 }
 
-.channel-text{
-    margin: 5px 0px;
+.channel-name-text{
+    margin: 15px 10% 15px 0;
+    text-align: center;
+}
+
+.channel-name-item-offset{
+    width: 30px;
+    margin: 5px 10px;
+}
+
+.channel-id-text{
+    margin: 5px 10% 0 0;
+    text-align: center;
+}
+
+.channel-id-image{
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
 }
 
 .remove-channel-button{
+    background-color: red;
+    height: 20px;
     width: 20px;
-    color: red;
+    color: white;
     display: flex;
     pointer-events: all;
     align-items: center;
-    flex-direction: row;
+    justify-content: center;
+    flex-direction: column;
+    border-radius: 50%;
+    pointer-events: all;
 }
 
-.remove-channel-button svg{
-    fill: aqua;
-    color: red;
+.remove-channel-button:hover{
+    cursor: pointer;
+}
+
+.remove-channel-icon {
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
 }
 
 .blocklist-wrapper {
@@ -32,18 +62,26 @@
     align-items: center;
 }
 
+.channel-box-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-bottom: 2px solid var(--bordercolor);
+    width: 100%;
+}
+
 .list-container {
     box-sizing: border-box;
     display: flex;
-    border-top: 2px solid var(--bordercolor);
     flex-grow: 2;
     flex-direction: column;
     max-height: 250px;
-    height: 100%;
     width: 100%;
     background-color: var(--listbg);
     overflow-y: overlay;
     scrollbar-width: 0px;
+    margin-top: 10px;
+    padding-bottom: 10px;
 }
 
   

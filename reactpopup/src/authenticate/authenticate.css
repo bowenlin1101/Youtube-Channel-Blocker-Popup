@@ -1,4 +1,4 @@
-.autfailed{
+.shake{
     animation-name: shake;
     animation-duration: 40ms;
     animation-iteration-count: 3;
@@ -17,6 +17,7 @@
     background-color: var(--autwrapper);
     align-self: center;
     border: 2px solid var(--bordercolor);
+    border-radius: 5px;
 }
 
 .authenticate-text{
@@ -28,11 +29,22 @@
 .password-box-wrapper {
     display: flex;
     flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 80%;
 }
 
 .lock-icon {
     fill: var(--textcolor);
+    width: 1.5em;
+    height: 1.5em;
+    align-self: left;
 }
+
+.authenticate-offset{
+    width: 1.5em;
+}
+
 @keyframes shake {
     from {left: -5px}
     to {right: -5px}

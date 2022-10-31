@@ -11,7 +11,7 @@
   --tabhover: #ADD8E6;
   --buttonbg: #27283c;
   --buttoncolor: #27283c;
-  --listbg: #27283c;
+  --listbg: #1f1e2e;
   --textboxbg: #27283c;
   --textboxtext: #27283c;
   --svgcolor: #27283c;
@@ -34,7 +34,6 @@
 
 svg {
   display: inline-block;
-  margin: 0 10px;
 }
 
 html{
@@ -50,6 +49,12 @@ body {
   margin: 0;
   overflow: hidden;
   scrollbar-width: none;
+}
+
+input[type=text], input[type=password] {
+  border-radius: 5px;
+  font-family: 'Open Sans', 'Segoe UI', 'Helvetica Neue', 'Ubuntu', sans-serif;
+  height: 20px;
 }
 
 p {
