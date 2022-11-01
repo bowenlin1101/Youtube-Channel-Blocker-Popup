@@ -1,11 +1,12 @@
 /*global chrome*/
-import React, {useState, useEffect} from 'react';
+import {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import Authenticate from "./authenticate/authenticate.js"
-import TabField from './tab/tabfield.js';
-import Header from './header/header.js'
-import Modal from './modal/Modal.js'
+import Authenticate from "./authenticate/authenticate"
+import TabField from './tab/tabfield';
+import Header from './header/header'
+import Modal from './modal/Modal'
+import { Dash } from 'react-bootstrap-icons';
 
 function Dashboard() {
   const [show, setShow] = useState(false);
@@ -31,7 +32,7 @@ useEffect(() => {
   return (
     <div className='dashboard'>
       <Header showModal={showModal}/>
-      <Authenticate unlocked={unlocked} setUnlocked={(e) => setUnlocked(e)}/>
+      <Authenticate unlocked={unlocked} setUnlocked={(e:boolean) => setUnlocked(e)}/>
       <TabField unlocked={unlocked}></TabField>
       <ResetPassword></ResetPassword>
       <Modal handleClose={hideModal} show={show} children={""} />
@@ -39,15 +40,13 @@ useEffect(() => {
   )
 }
 
-function ResetPassword(props){
-  
+function ResetPassword(){
+  return <div>{}</div>
 }
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById('root') as Element);
 root.render(
-  <React.StrictMode>
-    <Dashboard/>
-  </React.StrictMode>
+ <Dashboard></Dashboard>
 );
 
 

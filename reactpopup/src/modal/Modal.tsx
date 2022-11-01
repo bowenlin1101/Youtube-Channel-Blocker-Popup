@@ -1,6 +1,7 @@
+import React, { MouseEventHandler } from 'react';
 import './modal.css';
 
-function Modal(props) {
+function Modal(props:{show:boolean,children:any,handleClose:MouseEventHandler}) {
     const showHideClassName = props.show ? "modal display-block" : "modal display-none"
     return (
         <div className={showHideClassName}>

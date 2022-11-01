@@ -1,11 +1,11 @@
 /*global chrome*/
-import React, {useState, useReducer, useCallback, useEffect} from 'react';
+import React, {useState, useReducer, useCallback, useEffect, ReducerAction, ReducerWithoutAction, ChangeEvent} from 'react';
 import './blocklist.css'
 
-const BlockList = (props) => {
+const BlockList = (props:{unlocked:boolean, activeTab: string}) => {
     const [channelName, setChannelName] = useState("")
-    const [blockListName, setChannelNameList] = useReducer((state, action) => { 
-        var newState
+    const [blockListName, setChannelNameList] = useReducer((state:[{channelid:string,channelname:string,channelpageurl:string,link:string}], action:any) => {//TODO remove any type 
+        var newState;
         switch(action.type){
             case "ADD":
                 newState = [...state,action.name]
@@ -22,7 +22,7 @@ const BlockList = (props) => {
                 return state
         }      
     }, [])
-    const [blockListId, setChannelIdList] = useReducer((state, action) => {
+    const [blockListId, setChannelIdList] = useReducer((state:[{channelname:string}], action:any) => {
         var newState
         switch(action.type){
             case "REMOVE":
@@ -56,7 +56,7 @@ const BlockList = (props) => {
         })
     },[])
 
-    function handleChannelChange(e){
+    function handleChannelChange(e:ChangeEvent<HTMLInputElement>){
         setChannelName(e.target.value)
         setIsError(false)
     }
@@ -65,7 +65,7 @@ const BlockList = (props) => {
         () => {
             if (channelName.replace(/ /g,'').length === 24 && channelName.replace(/ /g,'')[0] === 'U' && channelName.replace(/ /g,'')[1] === 'C') {
                 //TODO backgroud.js logic
-                if (blockListId.some(id => id.channelid === `https://www.youtube.com/channel/${channelName.replace(/ /g,"")}`)){
+                if (blockListId.some((id:{channelid:string}) => id.channelid === `https://www.youtube.com/channel/${channelName.replace(/ /g,"")}`)){
                     setIsError(true)
                 } else {
                     chrome.runtime.sendMessage({channelurl:`https://www.youtube.com/channel/${channelName}`, query:'contentScript'})
@@ -78,7 +78,8 @@ const BlockList = (props) => {
 )
 
 
-    const escFunction = useCallback((event) => {
+    const escFunction = useCallback((event:KeyboardEvent) => {
+        if (document.activeElement)
         if (event.key === "Enter" && document.activeElement.getAttribute("class") === "channel-box" && props.unlocked){
             if (blockListName.includes(channelName)) {
                 setIsError(true)
@@ -89,13 +90,15 @@ const BlockList = (props) => {
     }, [channelName,props, blockListName, handleEnter])
 
 
-    const clickEscFunction = useCallback((event) => {
-        if (event.target.className === "remove-channel-button" && props.unlocked){
-            if (event.target.getAttribute("type") === "name") {
-                setChannelNameList({type: "REMOVE", name: event.target.id})
-            } else if (event.target.getAttribute("type") === "id") {
-                console.log("in here")
-                setChannelIdList({type: "REMOVE", name: event.target.id})
+    const clickEscFunction = useCallback((event:MouseEvent):any => {
+        if (event.target){
+            if ((event.target as HTMLDivElement).className === "remove-channel-button" && props.unlocked){
+                if ((event.target as HTMLDivElement).getAttribute("data-type") === "name") {
+                    setChannelNameList({type: "REMOVE", name: (event.target as HTMLDivElement).id})
+                } else if ((event.target as HTMLDivElement).getAttribute("data-type") === "id") {
+                    console.log("in here")
+                    setChannelIdList({type: "REMOVE", name: (event.target as HTMLDivElement).id})
+                }
             }
         }
     }, [props])
@@ -130,14 +133,14 @@ const BlockList = (props) => {
         if (!props.unlocked) {
             return(
                 <div className="blocklist-wrapper">
-                    <BlockTextBox isError={isError} disabled={true} channelName={channelName} onChange={(e) => handleChannelChange(e)}/>
-                    <BlockTextDisplay disabled={true} blockListId={blockListId} blockListName={blockListName}/>
+                    <BlockTextBox isError={isError} disabled={true} channelName={channelName} onChange={(e:ChangeEvent<HTMLInputElement>) => handleChannelChange(e)}/>
+                    <BlockTextDisplay data-disabled={true} blockListId={blockListId} blockListName={blockListName}/>
                 </div>
             )
         } else {
             return(
                 <div className="blocklist-wrapper">
-                    <BlockTextBox isError={isError} channelName={channelName} onChange={(e) => handleChannelChange(e)}/>
+                    <BlockTextBox isError={isError} disabled={false} channelName={channelName} onChange={(e:ChangeEvent<HTMLInputElement>) => handleChannelChange(e)}/>
                     <BlockTextDisplay blockListId={blockListId} blockListName={blockListName}/>
                 </div>
             )
@@ -147,7 +150,7 @@ const BlockList = (props) => {
     }
 }
 
-function BlockTextBox(props){
+function BlockTextBox(props:{isError:boolean,disabled:boolean,channelName:string,onChange:Function}){
     var styles = ""
     if (props.isError){
         styles = " shake"
@@ -169,25 +172,25 @@ function BlockTextBox(props){
     
 }
 
-function BlockTextDisplay(props){
+function BlockTextDisplay(props:{blockListName:string[],blockListId:[{channelid:string,channelname:string,link:string}]}){
     return(
         <div className='list-container'>
             {props.blockListName.map((n,i) =>
                 <BlockTextItemName key={i} channelname={n} id={i}/>
             )}
             {props.blockListId.map((n,i) => 
-                <BlockTextItemId key={i} channelname={n.channelname} link={`https://${n.link}`}/>
+                <BlockTextItemId id={i} key={i} channelname={n.channelname} link={`https://${n.link}`}/>
             )}
         </div>
     )
 }
 
-function BlockTextItemName(props){
+function BlockTextItemName(props:{id:number,channelname:string}){
     return(
         <div className='channel-item' key={props.id}>
             <div className='channel-name-item-offset'></div>
             <p className='channel-name-text'>{props.channelname}</p>
-            <div className='remove-channel-button' type="name" id={props.channelname}>
+            <div className='remove-channel-button' data-type="name" id={props.channelname}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className='remove-channel-icon' viewBox="0 0 16 16">
                     <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                 </svg>
@@ -196,12 +199,12 @@ function BlockTextItemName(props){
     )
 }
 
-function BlockTextItemId(props){
+function BlockTextItemId(props:{id:number,link:string,channelname:string}){
     return(
         <div className='channel-item' key={props.id}>
             <img alt='' className='channel-id-image' src={props.link}></img>
             <p className='channel-id-text'>{props.channelname}</p>
-            <div className='remove-channel-button' type="id" id={props.channelname}>
+            <div className='remove-channel-button' data-type="id" id={props.channelname}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className='remove-channel-icon' viewBox="0 0 16 16">
                     <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                 </svg>

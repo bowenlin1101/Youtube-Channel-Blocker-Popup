@@ -1,9 +1,9 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {ChangeEvent, useCallback, useEffect, useState} from 'react';
 // import ReactDOM from 'react-dom/client';
 import {Lock, Unlock} from 'react-bootstrap-icons'
 import './authenticate.css'
 
-function LockBox(props){
+function LockBox(props:{unlocked:boolean,setUnlocked:Function}){
     if (props.unlocked){
         return(
             <Unlock onClick={() => props.setUnlocked(false)} className="lock-icon"/>
@@ -15,7 +15,7 @@ function LockBox(props){
     }
 }
 
-function PasswordBox(props){
+function PasswordBox(props:{unlocked:boolean,failed:string,value:string,setPasswordValue:Function}){
     if (props.unlocked) {
         return (
             <input disabled type="password" className={`password-box${props.failed}`} value={props.value} onChange={(e) => props.setPasswordValue(e)}></input>
@@ -27,23 +27,25 @@ function PasswordBox(props){
     }
 }
 
-function Authenticate(props){
+function Authenticate(props:{unlocked:boolean ,setUnlocked:Function}){
     const [passwordValue,setPasswordValue] = useState("");
     const [failed, setFailed] = useState("");
 
-    function handlePassword(password){
+    function handlePassword(password:string){
         setPasswordValue(password)
         setFailed("")
     }
 
-    const escFunction = useCallback((event) => {
-        if (event.key === "Enter" && document.activeElement.getAttribute("class") === "password-box"){
-            if (passwordValue === "password"){
-                props.setUnlocked(true)
-            } else {
-                setFailed(" shake")
+    const escFunction = useCallback((event:KeyboardEvent) => {
+        if (document.activeElement){
+            if (event.key === "Enter" && document.activeElement.getAttribute("class") === "password-box"){
+                if (passwordValue === "password"){
+                    props.setUnlocked(true)
+                } else {
+                    setFailed(" shake")
+                }
+                setPasswordValue("")
             }
-            setPasswordValue("")
         }
     }, [passwordValue,props])
 
@@ -60,8 +62,8 @@ function Authenticate(props){
                 <p className='authenticate-text'>Enter password to change settings</p>
                 <div className='password-box-wrapper'>
                     <div className='authenticate-offset'></div>
-                    <PasswordBox unlocked={props.unlocked} failed={failed} value={passwordValue} setPasswordValue={(e) => handlePassword(e.target.value)}/>
-                    <LockBox unlocked={props.unlocked} setUnlocked={(e) => props.setUnlocked(e)}/>
+                    <PasswordBox unlocked={props.unlocked} failed={failed} value={passwordValue} setPasswordValue={(e:React.ChangeEvent<HTMLInputElement>) => handlePassword(e.target.value)}/>
+                    <LockBox unlocked={props.unlocked} setUnlocked={(e:MouseEvent) => props.setUnlocked(e)}/>
                 </div>
             </div>
         )

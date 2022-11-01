@@ -1,7 +1,8 @@
 import logo from '../images/new_128x128_logo.png'
+
 import './header.css'
 
-function Header(props) {
+function Header(props:{showModal: React.MouseEventHandler}) {
     return(
         <div className='header-container'>
             <div className='logo-container'>
