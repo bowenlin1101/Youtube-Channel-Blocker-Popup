@@ -13,7 +13,6 @@
     display: flex;
     justify-content: space-between;
     flex-direction: row;
-    /* border-bottom: 1px solid var(--bordercolor); */
     padding: 0px 16px;
     pointer-events: none;
 }
@@ -56,14 +55,18 @@
 .tab-underline {
     box-sizing: border-box;
     height: auto;
-    width: 30px;
+    width: 16px;
     border-bottom: 2px solid var(--bordercolor);
+}
+
+.tab #tab-button{
+    color: red;
 }
 
 .tab #tab-button.active {
     box-sizing: border-box;
     background-color: #1f1e2e;
-    color: red;
+    color: #01F8FB;
     border: 2px solid var(--bordercolor);
     border-bottom: none;
 }

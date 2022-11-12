@@ -14,12 +14,19 @@ function Settings(props:{activeTab:string,unlocked:boolean}){
     const [blockSearch, setBlockSearch] = useState(true)
     const [hideChannels, setHideChannels] = useState(true)
     const [autoLock, setAutoLock] = useState(false)
-
     const [blacklistInfo, setBlacklistInfo] = useState(false)
     const [shortsInfo, setShortsInfo] = useState(false)
     const [searchInfo, setSearchInfo] = useState(false)
     const [channelInfo, setChannelInfo] = useState(false)
     const [autoLockInfo, setAutoLockInfo] = useState(false)
+
+    chrome.storage.sync.get(['blacklisted', 'blockShorts','blockChannels','blockSearch','autoLock'], (result) => {
+        setBlackList(result.blacklisted)
+        setBlockShorts(result.blockShorts)
+        setBlockSearch(result.blockSearch)
+        setHideChannels(result.blockChannels)
+        setAutoLock(result.autoLock)
+    })
 
     function showBlackListInfo(){
         setBlacklistInfo(true)
@@ -59,36 +66,44 @@ function Settings(props:{activeTab:string,unlocked:boolean}){
 
     function handleAutoLock(){
         if (props.unlocked){
+            chrome.storage.sync.set({autoLock: !autoLock})
+            if (!autoLock){
+                var today = new Date
+                //TODO set to 5
+                today.setMinutes(today.getMinutes() + 5)
+                console.log("lockTime set")
+                chrome.storage.sync.set({lockTime: today.getTime()})
+            } else {
+                chrome.storage.sync.set({lockTime: false})
+            }
             setAutoLock(!autoLock)
         }
     }
 
     function handleDropDown(){
         if (props.unlocked){
-            setBlackList(!blacklist)
-        }
-    }
-
-    function handleCheckBox(){
-        if (props.unlocked){
+            chrome.storage.sync.set({blacklisted: !blacklist})
             setBlackList(!blacklist)
         }
     }
 
     function handleShorts(){
         if (props.unlocked){
+            chrome.storage.sync.set({blockShorts: !blockShorts})
             setBlockShorts(!blockShorts)
         }
     }
     
     function handleSearch(){
         if (props.unlocked){
+            chrome.storage.sync.set({blockSearch: !blockSearch})
             setBlockSearch(!blockSearch)
         }
     }
 
     function handleChannels() {
         if (props.unlocked){
+            chrome.storage.sync.set({blockChannels: !hideChannels})
             setHideChannels(!hideChannels)
         }
     }
@@ -96,7 +111,7 @@ function Settings(props:{activeTab:string,unlocked:boolean}){
     if (props.activeTab === "settings"){
         return(
             <>
-                <BlackWhiteListToggle blacklistInfo={blacklistInfo} showBlacklistInfo={showBlackListInfo} hideBlacklistInfo={hideBlackListInfo} blacklist={blacklist} handleCheckBox={handleCheckBox} handleDropDown={handleDropDown}/>
+                <BlackWhiteListToggle blacklistInfo={blacklistInfo} showBlacklistInfo={showBlackListInfo} hideBlacklistInfo={hideBlackListInfo} blacklist={blacklist} handleDropDown={handleDropDown}/>
                 <BlockRecommended channelInfo={channelInfo} showChannelInfo={showChannelInfo} hideChannelInfo={hideChannelInfo} searchInfo={searchInfo} showSearchInfo={showSearchInfo} hideSearchInfo={hideSearchInfo} shortsInfo={shortsInfo} showShortsInfo={showShortsInfo} hideShortsInfo={hideShortsInfo} disabled={!props.unlocked} blockShorts={blockShorts} blockSearch = {blockSearch} hideChannels={hideChannels} handleShorts={handleShorts} handleSearch={handleSearch} handleChannels={handleChannels}/>
                 <AutoLock autoLockInfo={autoLockInfo} showAutoLockInfo={showAutoLockInfo} hideAutoLockInfo={hideAutoLockInfo}  autoLock={autoLock} handleAutoLock={handleAutoLock}/>
             </>
@@ -107,7 +122,7 @@ function Settings(props:{activeTab:string,unlocked:boolean}){
     }
 }
 
-function BlackWhiteListToggle(props:{blacklistInfo:boolean, showBlacklistInfo:()=>void, hideBlacklistInfo:()=>void,blacklist:boolean, handleCheckBox:ChangeEventHandler, handleDropDown:()=>void}) {
+function BlackWhiteListToggle(props:{blacklistInfo:boolean, showBlacklistInfo:()=>void, hideBlacklistInfo:()=>void,blacklist:boolean, handleDropDown:()=>void}) {
     
         return(
             <div className='dropdown-container'>

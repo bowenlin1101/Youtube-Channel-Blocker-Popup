@@ -9,9 +9,8 @@ import './authenticate.css'
 function LockBox(props:{unlocked:boolean,setUnlocked:Function}){
     function handleClick(){
         props.setUnlocked(false)
-        //TODO
-        // chrome.storage.sync.set({unlocked:false})
-        // chrome.storage.sync.set({locktime:null})
+        chrome.storage.sync.set({unlocked:false})
+        chrome.storage.sync.set({lockTime:false})
     }
     if (props.unlocked){
         return(
@@ -50,19 +49,12 @@ function Authenticate(props:{unlocked:boolean ,setUnlocked:Function}){
     const [modalConfirmValue, setModalConfirmValue] = useState("")
     const [modalFailed, setModalFailed] = useState('')
     //TODO
-    // useEffect(() => {
-    //     setInterval(() => {
-    //         chrome.storage.sync.get(["locktime","password"], (result) => {
-    //             if (result.locktime){
-    //                 if (result.locktime < new Date().getTime()){
-    //                     chrome.storage.sync.set({locktime: null})
-    //                     chrome.storage.sync.set({unlocked: false})
-    //                     props.setUnlocked(false)
-    //                 }
-    //             }
-    //         })
-    //     }, 1000)        
-    // })
+    useEffect(() => {
+
+        chrome.storage.sync.get(['password'], (result) => {
+            setPassword(result.password)
+        })     
+    })
 
     function changeModalPasswordValue(password:string){
         setModalPasswordValue(password)
@@ -93,6 +85,7 @@ function Authenticate(props:{unlocked:boolean ,setUnlocked:Function}){
         if (modalPasswordValue.replace(/ /g, '') != '' && modalPasswordValue === modalConfirmValue){
             setShowPasswordModal(false)
             setPassword(modalConfirmValue)
+            chrome.storage.sync.set({password:modalConfirmValue})
         } else {
             setModalFailed(' shake')
         }
@@ -104,14 +97,15 @@ function Authenticate(props:{unlocked:boolean ,setUnlocked:Function}){
                 console.log(password)
                     if (passwordValue === password){
                         props.setUnlocked(true)
-                        //TODO
-                        // chrome.storage.sync.get(['autoLock'], (result) => {
-                        //     if (result.autoLock){
-                        //         var today = new Date
-                        //         today.setMinutes(today.getMinutes() + 5)
-                        //         chrome.storage.sync.set({lockTime: today.getTime()} )
-                        //     }
-                        // })
+                        chrome.storage.sync.set({unlocked:true})
+                        //TODO set to 5 minutes
+                        chrome.storage.sync.get(['autoLock'], (result) => {
+                            if (result.autoLock){
+                                var today = new Date
+                                today.setMinutes(today.getMinutes() + 5)
+                                chrome.storage.sync.set({lockTime: today.getTime()} )
+                            }
+                        })
                     } else {
                         setFailed(" shake")
                     }

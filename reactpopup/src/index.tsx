@@ -11,15 +11,44 @@ import { Dash } from 'react-bootstrap-icons';
 function Dashboard() {
   const [show, setShow] = useState(false);
   const [unlocked, setUnlocked] = useState(false)
+  useEffect(() => {
+    console.log(chrome.storage.sync.get(['unlocked', 'blacklisted','blockSearch','blockShorts','blockChannels']))
 
-useEffect(() => {
-  chrome.storage.sync.get(['unlocked'], (result) => {
-    if(result.unlocked === undefined) {
-      chrome.storage.sync.set({unlocked: true})
-    }
-    setUnlocked(result.unlocked)
-  })
-},[])
+    chrome.storage.sync.get(['unlocked', 'blacklisted','blockShorts', 'blockSearch', 'blockChannels', 'autoLock'], (result) => {
+      if(result.unlocked === undefined) {
+        chrome.storage.sync.set({unlocked: false})
+      }
+      if(result.blacklisted === undefined) {
+        chrome.storage.sync.set({blacklisted: true})
+      }
+      if(result.blockShorts === undefined) {
+        chrome.storage.sync.set({blockShorts: true})
+      }
+      if(result.blockSearch === undefined) {
+        chrome.storage.sync.set({blockSearch: true})
+      }
+      if(result.blockChannels === undefined) {
+        chrome.storage.sync.set({blockChannels: true})
+      }
+      if(result.autoLock === undefined) {
+        chrome.storage.sync.set({autoLock: false})
+      }
+      setUnlocked(result.unlocked)
+
+      setInterval(() => {
+        chrome.storage.sync.get(["lockTime","password"], (result) => {
+            if (result.lockTime){
+                if (result.lockTime < new Date().getTime()){
+                    chrome.storage.sync.set({lockTime: false})
+                    chrome.storage.sync.set({unlocked: false})
+                    setUnlocked(false)
+                    console.log("Lock")
+                }
+            }
+        })
+    }, 1000)   
+    })
+  },[])
 
   function showModal() {
     setShow(true)
@@ -31,11 +60,12 @@ useEffect(() => {
 
   return (
     <div className='dashboard'>
-      <Header showModal={showModal}/>
+      <Header showModal={showModal}>
+        <Modal handleClose={hideModal} handleShow={showModal} show={show}/>
+      </Header>
       <Authenticate unlocked={unlocked} setUnlocked={(e:boolean) => setUnlocked(e)}/>
       <TabField unlocked={unlocked}></TabField>
       <ResetPassword></ResetPassword>
-      <Modal handleClose={hideModal} show={show} children={""} />
     </div>
   )
 }

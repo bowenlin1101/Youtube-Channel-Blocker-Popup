@@ -51,12 +51,6 @@ body {
   scrollbar-width: none;
 }
 
-input[type=text], input[type=password] {
-  border-radius: 5px;
-  font-family: 'Open Sans', 'Segoe UI', 'Helvetica Neue', 'Ubuntu', sans-serif;
-  height: 20px;
-}
-
 p {
   font-size: medium;
 }
@@ -81,5 +75,6 @@ img {
   width: 100%;
   position: absolute;
   overflow: hidden;
+  background-color: #27283c;
 }
 

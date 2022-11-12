@@ -2,6 +2,7 @@ import React, {useState, useReducer, useCallback, useEffect} from 'react';
 import './tabfield.css'
 import BlockList from '../blocklist/blocklist';
 import Settings from '../settings/settings'
+import Additional from '../additional/additional'
 
 function TabField(props:{unlocked:boolean}){
     const [activeTab, setActiveTab] = useState("blocklist")
@@ -34,18 +35,6 @@ function TabWrapper(props:{activeTab:string,onClick:Function,unlocked:boolean}){
             </div>
         </div>
     )
-}
-
-
-
-function Additional(props:{unlocked:boolean, activeTab:string}){
-    if (props.activeTab === "additional"){
-        return(
-            <h3>Additional</h3>
-        )
-    } else {
-        return(null)
-    }
 }
 
 export default TabField
