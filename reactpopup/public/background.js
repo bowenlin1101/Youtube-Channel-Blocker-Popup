@@ -1,10 +1,5 @@
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse){
-        if (request.query == "timeup"){
-            chrome.runtime.sendMessage({
-                package: "lock"
-            })
-        } else {
             var channelpageurl = 
             fetch(request.channelurl)
             .then(x => {
@@ -73,6 +68,5 @@ chrome.runtime.onMessage.addListener(
                         }
                     })
                 }
-            })
-        }      
+            })    
     })
