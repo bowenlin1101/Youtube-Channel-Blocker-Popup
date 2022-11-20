@@ -1,5 +1,5 @@
-import React, {ChangeEvent, useCallback, useEffect, useState} from 'react';
-// import ReactDOM from 'react-dom/client';
+/*global chrome*/
+import React, {useCallback, useEffect, useState} from 'react';
 import {Lock, Unlock} from 'react-bootstrap-icons'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
@@ -40,15 +40,13 @@ function PasswordBox(props:{unlocked:boolean,failed:string,value:string,setPassw
 }
 
 function Authenticate(props:{unlocked:boolean ,setUnlocked:Function}){
-    //TODO
-    const [password, setPassword] = useState("")
+    const [password, setPassword] = useState<string | null | undefined>()
     const [passwordValue,setPasswordValue] = useState("");
     const [failed, setFailed] = useState("");
     const [showPasswordModal, setShowPasswordModal] = useState(false)
     const [modalPasswordValue, setModalPasswordValue] = useState("")
     const [modalConfirmValue, setModalConfirmValue] = useState("")
     const [modalFailed, setModalFailed] = useState('')
-    //TODO
     useEffect(() => {
 
         chrome.storage.sync.get(['password'], (result) => {
@@ -82,7 +80,7 @@ function Authenticate(props:{unlocked:boolean ,setUnlocked:Function}){
     }
 
     function handleSetPassword(){
-        if (modalPasswordValue.replace(/ /g, '') != '' && modalPasswordValue === modalConfirmValue){
+        if (modalPasswordValue.replace(/ /g, '') !== '' && modalPasswordValue === modalConfirmValue){
             setShowPasswordModal(false)
             setPassword(modalConfirmValue)
             chrome.storage.sync.set({password:modalConfirmValue})
@@ -98,10 +96,9 @@ function Authenticate(props:{unlocked:boolean ,setUnlocked:Function}){
                     if (passwordValue === password){
                         props.setUnlocked(true)
                         chrome.storage.sync.set({unlocked:true})
-                        //TODO set to 5 minutes
                         chrome.storage.sync.get(['autoLock'], (result) => {
                             if (result.autoLock){
-                                var today = new Date
+                                var today = new Date()
                                 today.setMinutes(today.getMinutes() + 5)
                                 chrome.storage.sync.set({lockTime: today.getTime()} )
                             }
@@ -112,7 +109,7 @@ function Authenticate(props:{unlocked:boolean ,setUnlocked:Function}){
                     setPasswordValue("")
             }
         }
-    }, [passwordValue,props])
+    }, [passwordValue, password,props])
 
     useEffect(() => {
         document.addEventListener("keydown", escFunction, false);

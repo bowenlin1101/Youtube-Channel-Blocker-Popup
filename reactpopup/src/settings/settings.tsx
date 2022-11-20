@@ -8,7 +8,6 @@ import './settings.css'
 
 
 function Settings(props:{activeTab:string,unlocked:boolean}){
-    //TODO
     const [blacklist, setBlackList] = useState(false)
     const [blockShorts, setBlockShorts] = useState(true)
     const [blockSearch, setBlockSearch] = useState(true)
@@ -68,8 +67,7 @@ function Settings(props:{activeTab:string,unlocked:boolean}){
         if (props.unlocked){
             chrome.storage.sync.set({autoLock: !autoLock})
             if (!autoLock){
-                var today = new Date
-                //TODO set to 5
+                var today = new Date()
                 today.setMinutes(today.getMinutes() + 5)
                 console.log("lockTime set")
                 chrome.storage.sync.set({lockTime: today.getTime()})
@@ -243,7 +241,7 @@ function BlockRecommended(props: { channelInfo:boolean, showChannelInfo:()=>void
                             <div className='modal-body'>
                                 <div>{`Currently: ${props.hideChannels ? 'On' : 'Off'}`}</div>
                                 <br/>
-                                <p>{`Hides all blocked channels on the sidebar, including searches for channels`}</p>
+                                <p>{`Hides all blocked channels on from the sidebar, search results, and hides videos on the channel page`}</p>
                             </div>
                         </Modal.Body>
                         <Modal.Footer>
