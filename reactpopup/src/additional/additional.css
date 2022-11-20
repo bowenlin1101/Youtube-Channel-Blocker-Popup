@@ -1,0 +1,23 @@
+.export-container > .export-button:hover:active,.export-container > .export-button:hover,.export-container > .export-button{
+    background-color: #01F8FB;
+    color: #27283c;
+    width: 130px;
+}
+
+.import-container > .import-button:hover:active,.import-container > .import-button:hover,.import-container > .import-button{
+    background-color: #01F8FB;
+    color: #27283c;
+    width: 130px;
+}
+
+.import-export-container{
+    margin: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.load-icon{
+    margin-right: 5px;
+}
