@@ -6,15 +6,16 @@ import Authenticate from "./authenticate/authenticate"
 import TabField from './tab/tabfield';
 import Header from './header/header'
 import Modal from './modal/Modal'
-import { Dash } from 'react-bootstrap-icons';
+import Options from './options/options';
+
+var views = chrome.extension.getViews({ type: "popup" });
 
 function Dashboard() {
   const [show, setShow] = useState(false);
   const [unlocked, setUnlocked] = useState(false)
   useEffect(() => {
-    console.log(chrome.storage.sync.get(['unlocked', 'blacklisted','blockSearch','blockShorts','blockChannels']))
 
-    chrome.storage.sync.get(['unlocked', 'blacklisted','blockShorts', 'blockSearch', 'blockChannels', 'autoLock'], (result) => {
+    chrome.storage.sync.get(['unlocked', 'blacklisted','blockShorts', 'blockSearch', 'blockChannels', 'autoLock', "password"], (result) => {
       if(result.unlocked === undefined) {
         chrome.storage.sync.set({unlocked: false})
       }
@@ -33,10 +34,13 @@ function Dashboard() {
       if(result.autoLock === undefined) {
         chrome.storage.sync.set({autoLock: false})
       }
+      if (result.password === undefined){
+        chrome.storage.sync.set({password:""})
+      }
       setUnlocked(result.unlocked)
 
       setInterval(() => {
-        chrome.storage.sync.get(["lockTime","password"], (result) => {
+        chrome.storage.sync.get(["lockTime"], (result) => {
             if (result.lockTime){
                 if (result.lockTime < new Date().getTime()){
                     chrome.storage.sync.set({lockTime: false})
@@ -75,8 +79,13 @@ function ResetPassword(){
 }
 
 const root = ReactDOM.createRoot(document.getElementById('root') as Element);
-root.render(
- <Dashboard></Dashboard>
-);
+if (views.length > 0){
+  root.render(
+    <Dashboard></Dashboard>
+  );
+} else {
+  root.render(<Options/>)
+}
+
 
 

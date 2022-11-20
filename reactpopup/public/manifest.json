@@ -6,6 +6,7 @@
   "background": {
     "service_worker":"background.js"
   },
+  "options_page": "index.html",
   "icons": { 
      "128": "new_128x128_logo.png" },
   "content_scripts":
