@@ -262,7 +262,7 @@ setInterval(function(){
                     }
                 }
                 var identifier = url.split("/")[url.split('/').length-1]
-                if (identifier != "videos" && identifier != "playlists" && identifier != "community" && identifier != "store" && identifier != "channels" && identifier != "channels" && identifier != "about") {
+                if (identifier != "streams" && identifier != "videos" && identifier != "playlists" && identifier != "community" && identifier != "store" && identifier != "channels" && identifier != "channels" && identifier != "about") {
                     document.querySelector("#addChannel").style.display = "inline-block";
                 } else {
                     document.querySelector("#addChannel").style.display = "none";
@@ -298,10 +298,10 @@ setInterval(function(){
                 }
 
                 if (result.blockChannels){
+                    var shelves = document.querySelectorAll("ytd-shelf-renderer")
+                    var sectionRenderers = document.querySelectorAll("ytd-item-section-renderer")
+                    var richGridRenderers = document.querySelectorAll("ytd-rich-grid-renderer")
                     if (result.blacklisted){
-                        var shelves = document.querySelectorAll("ytd-shelf-renderer")
-                        var sectionRenderers = document.querySelectorAll("ytd-item-section-renderer")
-                        var richGridRenderers = document.querySelectorAll("ytd-rich-grid-renderer")
                         if (processedChannelList.includes(channelName)){
                             
                             for (i of shelves){
@@ -331,24 +331,111 @@ setInterval(function(){
                     } else {
                         if (!processedChannelList.includes(channelName)){
                             
+                            for (i of shelves){
+                                i.style.display = 'none'
+                            }
+
+                            for (i of sectionRenderers){
+                                i.style.display = 'none'
+                            }
+
+                            for (i of richGridRenderers){
+                                i.style.display = 'none'
+                            }
+                        } else {
+                            for (i of shelves){
+                                i.style.display = 'block'
+                            }
+
+                            for (i of sectionRenderers){
+                                i.style.display = 'block'
+                            }
+
+                            for (i of richGridRenderers){
+                                i.style.display = 'block'
+                            }
                         }
                     }
                 }
             } else {
+                //put the channel name and id of individual videos recommended on the Youtube home screen where it is easily accessible - up to the parent element
+                for (i of document.querySelectorAll("#avatar-link")){
+                    if (i.getAttribute("data-channelname") == undefined){
+                        var channelname = i.title.toLowerCase().replace(/ /g,'')
+                        i.parentNode.parentNode.parentNode.parentNode.parentNode.setAttribute("data-channelname", channelname)
+                    }
+                    if (i.getAttribute("data-channelid") == undefined){
+                        var channelid = i.href;
+                        i.parentNode.parentNode.parentNode.parentNode.parentNode.setAttribute("data-channelid", channelid)
+                    }
+                }
+                
+                //loop through the recommended videos on the home screen, get the elements that match names in the processed list and remove
+                for (i of document.getElementsByTagName("ytd-rich-item-renderer")){
+                    function hideVideoElements(){
+                        //clone to remove hover event listeners that will prompt the auto-play feature
+                        var videorenderer = i.querySelector("#dismissible").childNodes[0]
+                        if (videorenderer.getAttribute('data-isClone') == undefined){
+                            var clone = videorenderer.cloneNode(true)
+                            clone.setAttribute("data-isClone",true)
+                            videorenderer.parentNode.replaceChild(clone,videorenderer)
+                            var parent = clone.parentElement.parentElement.parentElement.parentElement
+                            //TODO fix the parent bug
+                            if (parent.querySelector("#details") && parent.querySelector("#menu") && parent.querySelector("#meta")){
+                                for (i of parent.querySelector("#details").getElementsByTagName("A")){
+                                    i.style.display = 'none'
+                                    // i.remove()
+                                }
+                                for (i of parent.querySelector("#menu").getElementsByTagName("A")){
+                                    i.style.display = 'none'
 
-            }
-            //put the channel name and id of individual videos recommended on the Youtube home screen where it is easily accessible - up to the parent element
-            for (i of document.querySelectorAll("#avatar-link")){
-                if (i.getAttribute("data-channelname") == undefined){
-                    var channelname = i.title.toLowerCase().replace(/ /g,'')
-                    i.parentNode.parentNode.parentNode.parentNode.parentNode.setAttribute("data-channelname", channelname)
+                                    // i.remove()
+                                }
+                                for (i of parent.querySelector("#meta").getElementsByTagName("A")){
+                                    i.style.display = 'none'
+                                    // i.remove()
+                                }
+                                parent.querySelector("#details").style.display = 'none';
+                                // parent.querySelector("#details").remove()
+                            }
+                            if (!parent.querySelector(`[data-class="block-sign"]`)){
+                                var center = document.createElement("center");
+                                center.style.display = "flex"
+                                center.style.flexDirection = "column"
+                                center.style.alignItems = "center"
+                                center.style.justifyContent = "center"
+                                center.style.height = "100%"
+                                var blockedSign = document.createElement("h3");
+                                blockedSign.setAttribute("data-class", "block-sign")
+                                blockedSign.innerHTML = "BLOCKED";
+                                blockedSign.style.color = "	#C0C0C0";
+                                blockedSign.style.fontSize = "3em";
+                                center.appendChild(blockedSign)
+                                parent.querySelectorAll("a#thumbnail")[0].appendChild(center)
+                            } else {
+                                parent.querySelector(`[data-class="block-sign"]`).parentElement.style.display = "flex"
+                            }
+                            i.setAttribute("data-processed", true)
+                            i.setAttribute("data-sort-type", result.blacklisted)
+                        }
+                    }
+
+                    if (i.getAttribute("data-processed") == false || i.getAttribute("data-processed") == undefined || i.getAttribute("data-sort-type" != result.blacklisted)){
+                        if (i.getAttribute("data-channelname")){
+                            if (result.blacklisted){
+                                if (processedChannelList.includes(i.getAttribute("data-channelname").toLowerCase().replace(/ /g,'')) || processedChannelIds.includes(i.getAttribute("data-channelid").toLowerCase().replace(/ /g,''))){
+                                    hideVideoElements()
+                                }
+                            } else {
+                                if (!processedChannelList.includes(i.getAttribute("data-channelname").toLowerCase().replace(/ /g,'')) && !processedChannelIds.includes(i.getAttribute("data-channelid").toLowerCase().replace(/ /g,''))){
+                                    hideVideoElements()
+                                }
+                            }   
+                        }
+                    }
                 }
-                if (i.getAttribute("data-channelid") == undefined){
-                    var channelid = i.href;
-                    i.parentNode.parentNode.parentNode.parentNode.parentNode.setAttribute("data-channelid", channelid)
-                }
             }
-            
+
             if (result.blockShorts){
                 if (document.querySelectorAll("ytd-rich-shelf-renderer[is-shorts]")[0])
                     document.querySelectorAll("ytd-rich-shelf-renderer[is-shorts]")[0].style.display = 'none';
@@ -358,73 +445,7 @@ setInterval(function(){
                     topSidebar.querySelector("#items").childNodes[1].style.display = 'none'
                 }
             }
-
-            //loop through the recommended videos on the home screen, get the elements that match names in the processed list and remove
-            for (i of document.getElementsByTagName("ytd-rich-item-renderer")){
-                function hideVideoElements(){
-                    //clone to remove hover event listeners that will prompt the auto-play feature
-                    var videorenderer = i.querySelector("#dismissible").childNodes[0]
-                    if (videorenderer.getAttribute('data-isClone') == undefined){
-                        var clone = videorenderer.cloneNode(true)
-                        clone.setAttribute("data-isClone",true)
-                        videorenderer.parentNode.replaceChild(clone,videorenderer)
-                        var parent = clone.parentElement.parentElement.parentElement.parentElement
-                        //TODO fix the parent bug
-                        if (parent.querySelector("#details") && parent.querySelector("#menu") && parent.querySelector("#meta")){
-                            for (i of parent.querySelector("#details").getElementsByTagName("A")){
-                                i.style.display = 'none'
-                                // i.remove()
-                            }
-                            for (i of parent.querySelector("#menu").getElementsByTagName("A")){
-                                i.style.display = 'none'
-
-                                // i.remove()
-                            }
-                            for (i of parent.querySelector("#meta").getElementsByTagName("A")){
-                                i.style.display = 'none'
-                                // i.remove()
-                            }
-                            parent.querySelector("#details").style.display = 'none';
-                            // parent.querySelector("#details").remove()
-                        }
-                        if (!parent.querySelector(`[data-class="block-sign"]`)){
-                            var center = document.createElement("center");
-                            center.style.display = "flex"
-                            center.style.flexDirection = "column"
-                            center.style.alignItems = "center"
-                            center.style.justifyContent = "center"
-                            center.style.height = "100%"
-                            var blockedSign = document.createElement("h3");
-                            blockedSign.setAttribute("data-class", "block-sign")
-                            blockedSign.innerHTML = "BLOCKED";
-                            blockedSign.style.color = "	#C0C0C0";
-                            blockedSign.style.fontSize = "3em";
-                            center.appendChild(blockedSign)
-                            parent.querySelectorAll("a#thumbnail")[0].appendChild(center)
-                        } else {
-                            parent.querySelector(`[data-class="block-sign"]`).parentElement.style.display = "flex"
-                        }
-                        i.setAttribute("data-processed", true)
-                        i.setAttribute("data-sort-type", result.blacklisted)
-                    }
-                }
-
-                if (i.getAttribute("data-processed") == false || i.getAttribute("data-processed") == undefined || i.getAttribute("data-sort-type" != result.blacklisted)){
-                    if (i.getAttribute("data-channelname")){
-                        if (result.blacklisted){
-                            if (processedChannelList.includes(i.getAttribute("data-channelname").toLowerCase().replace(/ /g,'')) || processedChannelIds.includes(i.getAttribute("data-channelid").toLowerCase().replace(/ /g,''))){
-                                hideVideoElements()
-                            }
-                        } else {
-                            if (!processedChannelList.includes(i.getAttribute("data-channelname").toLowerCase().replace(/ /g,'')) && !processedChannelIds.includes(i.getAttribute("data-channelid").toLowerCase().replace(/ /g,''))){
-                                hideVideoElements()
-                            }
-                        }   
-                    }
-                }
-            }
-
-                // blocks the preview of blocked channel videos
+            // blocks the preview of blocked channel videos
             if (document.getElementById("video-preview-container")){
                 if (document.getElementById("video-preview-container").querySelector("video")){
                     if (document.getElementById("video-preview-container").querySelector("video").src != ""){
@@ -450,34 +471,36 @@ setInterval(function(){
             }
             
                 // check whether the player queue is open
-            if (document.getElementById("info-bar")){
-                if (document.getElementById("info-bar").querySelector("yt-formatted-string#owner-name")) {
-                    //make sure the video is playing by checking the video's src
-                    if (document.getElementsByTagName("video")[0].src != ""){
-                        // retrieve the ariaLabel to get the channel name and process it
-                        var channelName = document.getElementById("info-bar").querySelector("yt-formatted-string#owner-name").innerHTML.replace(/ /g,"").toLowerCase()
-                        // loop through strings in the refined list 
-                        // process the channelname
-                        function closeQueue(){
-                            document.querySelector(".ytp-miniplayer-close-button").click()
-                            document.querySelector("#confirm-button").click()
-                            window.location.replace("https://www.youtube.com");
+            if (document.querySelector("ytd-miniplayer")){
+                if (document.querySelector("ytd-miniplayer").querySelector("video")){
+                    if (document.getElementById("info-bar").querySelector("yt-formatted-string#owner-name")) {
+                        //make sure the video is playing by checking the video's src
+                        if (document.querySelector("ytd-miniplayer").querySelector("video").src != ""){
+                            // retrieve the ariaLabel to get the channel name and process it
+                            var channelName = document.getElementById("info-bar").querySelector("yt-formatted-string#owner-name").innerHTML.replace(/ /g,"").toLowerCase()
+                            // loop through strings in the refined list 
+                            // process the channelname
+                            function closeQueue(){
+                                document.querySelector(".ytp-miniplayer-close-button").click()
+                                document.querySelector("#confirm-button").click()
+                                window.location.replace("https://www.youtube.com");
+                            }
+                            if (result.blacklisted){  
+                                //check if the channel is in the list
+                                if (processedChannelList.includes(channelName) && channelName != ""){
+                                    closeQueue()
+                                    alert("this channel is blacklisted")
+                                }
+                            // if whitelisted is selected
+                            } else {    
+                                if (!processedChannelList.includes(channelName) && channelName != ""){
+                                    closeQueue()
+                                    alert("this channel is not whitelisted")
+                                }
+                            }    
                         }
-                        if (result.blacklisted){  
-                            //check if the channel is in the list
-                            if (processedChannelList.includes(channelName) && channelName != ""){
-                                closeQueue()
-                                alert("this channel is blacklisted")
-                            }
-                        // if whitelisted is selected
-                        } else {    
-                            if (!processedChannelList.includes(channelName) && channelName != ""){
-                                closeQueue()
-                                alert("this channel is not whitelisted")
-                            }
-                        }    
-                    }
-                } 
+                    } 
+                }
             }
         }
         //Hide blocked channels on side bar
