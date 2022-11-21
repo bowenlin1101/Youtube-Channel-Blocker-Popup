@@ -27,8 +27,8 @@
 }
 
 .channel-id-image{
-    height: 30px;
-    width: 30px;
+    height: 40px;
+    width: 40px;
     border-radius: 50%;
 }
 
@@ -83,5 +83,3 @@
     margin-top: 10px;
     padding-bottom: 10px;
 }
-
-  
