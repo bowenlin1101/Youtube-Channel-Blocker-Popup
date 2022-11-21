@@ -7,11 +7,11 @@ function Header(props:{showModal: React.MouseEventHandler, children:React.ReactE
     return(
         <div className='header-container'>
             <div className='logo-container'>
-                <img alt="Youtube Channel Blocker Logo" src={logo}></img>
-                <h1 className='header'>Channel Blocker</h1>
-                <>
+                <img alt="Youtube Channel Blocker Logo" src={logo} className='header-logo'></img>
+                <div className='title-question-container'>
+                    <h1 className='header'>Channel Blocker</h1>
                     {props.children}
-                </>
+                </div>
             </div>
         </div>
     )

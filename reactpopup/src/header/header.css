@@ -17,6 +17,7 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    width: 100%;
 }
 
 .logo-container svg{
@@ -27,3 +28,16 @@
 svg:hover, span:hover{
     cursor: pointer;
 }
+
+img.header-logo {
+    width: 4rem;
+    height: 4rem;
+    margin: 5px 10px;
+}
+
+  .title-question-container{
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      width: 55%;
+  }

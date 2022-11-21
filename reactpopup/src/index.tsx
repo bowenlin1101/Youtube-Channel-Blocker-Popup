@@ -5,7 +5,7 @@ import './index.css';
 import Authenticate from "./authenticate/authenticate"
 import TabField from './tab/tabfield';
 import Header from './header/header'
-import Modal from './modal/Modal'
+import Modal from './modal/modal'
 import Options from './options/options';
 
 var views = chrome.extension.getViews({ type: "popup" });
