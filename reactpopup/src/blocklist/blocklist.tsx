@@ -28,6 +28,12 @@ const BlockList = (props:{unlocked:boolean, activeTab: string}) => {
             chrome.storage.sync.get(['blockedchannelids'], (result2) => {
                 setChannelIdList({type: "SET", name: result2.blockedchannelids})
             })
+
+                if (result.blockedchannelnames.length > 0){
+                    result.blockedchannelnames.forEach((channelName:string) => {chrome.runtime.sendMessage({channelurl:`https://www.youtube.com/@${channelName.replace(/ /g,'').toLowerCase()}/featured`, query:'contentScript'})
+                    chrome.storage.sync.set({blockedchannelnames:[]})
+                })
+            }
         })
     },[])
 
@@ -45,7 +51,8 @@ const BlockList = (props:{unlocked:boolean, activeTab: string}) => {
                     chrome.runtime.sendMessage({channelurl:`https://www.youtube.com/channel/${channelName}`, query:'contentScript'})
                 }
             } else {
-                setIsError(true)
+                console.log(`https://www.youtube.com/@${channelName.replace(/ /g,"").toLowerCase()}`)
+                chrome.runtime.sendMessage({channelurl:`https://www.youtube.com/@${channelName.replace(/ /g,"").toLowerCase()}/featured`, query:'contentScript'})
             }
         setChannelName("")
     }, [channelName,blockListId]
@@ -89,6 +96,8 @@ const BlockList = (props:{unlocked:boolean, activeTab: string}) => {
                 chrome.storage.sync.get(['blockedchannelids'], (result) => {
                     setChannelIdList({type:"SET",name:result.blockedchannelids})
                 })
+            } else if (request.package === "error"){
+                setIsError(true)
             }
         })
     },[])
