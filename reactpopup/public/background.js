@@ -1,5 +1,6 @@
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse){
+        console.log(request.channelurl)
             var channelpageurl = 
             fetch(request.channelurl)
             .then(x => {
@@ -9,7 +10,11 @@ chrome.runtime.onMessage.addListener(
             })    
             .then(y => /"canonicalBaseUrl":"(.*?)"/.exec(y))
             .then(z => z[z.length-1])
-            .then(a => {return "https://www.youtube.com"+a});
+            .then(a => {return "https://www.youtube.com"+a})
+            .catch(() => {
+                chrome.runtime.sendMessage({package: "error"});
+            })
+            
 
             var channelid = 
             fetch(request.channelurl)
@@ -20,7 +25,10 @@ chrome.runtime.onMessage.addListener(
             })    
             .then(y => /"canonical" href="(.*?)"><link/.exec(y))
             .then(z => z[z.length-1])
-            .then(a => {return a});
+            .then(a => {return a})
+            .catch(() => {
+                chrome.runtime.sendMessage({package: "error"});
+            });
 
             var link = fetch(request.channelurl)
             .then(x=> x.text())
@@ -28,6 +36,9 @@ chrome.runtime.onMessage.addListener(
             .then(y=>  /,{"url":"https:\/\/yt3(.*?)"/.exec(y))
             .then(z => z[z.length-1])   
             .then(a => {return `yt3${a}`})
+            .catch(() => {
+                chrome.runtime.sendMessage({package: "error"});
+            });
 
             var channelname = fetch(request.channelurl)
             .then(x=> x.text())
@@ -50,13 +61,26 @@ chrome.runtime.onMessage.addListener(
                     name += `${i} `;
                 }
                 return name.replace("Streamed","")
+            })
+            .then((h) => {
+                if (h.replace(/ /g,"") == ""){
+                    throw new Error
+                } else {
+                    return h
+                }
+            })
+            .catch(() => {
+                chrome.runtime.sendMessage({package: "error"});
             });
+
             Promise.all([channelid, channelname,link,channelpageurl]).then((values) => {
                 if (request.query == "popup"){
                     chrome.runtime.sendMessage({
                         package: "channelinfo",value: {channelid: values[0],channelname: values[1], link: values[2],channelpageurl:values[3]}
                     });
                 } else if (request.query == "contentScript"){
+ 
+                    if (values[1] && values[2] && values[3])
                     chrome.storage.sync.get(['blockedchannelids'], function(result) {
                         if (!result.blockedchannelids.some(object => object.channelid == values[0]) || result.blockedchannelids == []){
                             var tempblockedchannelids = result.blockedchannelids 
