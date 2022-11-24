@@ -29,25 +29,36 @@ function Tutorial(props:{show:boolean,handleClose:() => void, handleShow:MouseEv
                     <img alt="Image of locked lock icon" src={Image0}></img>
                     <br/>
                     <br/>
-                    <p>The lockbox can be locked manually by clicking the lock icon, or it can be locked automatically if the “autoLock” setting in the “Settings” tab is selected.</p>
+                    <p>The lockbox can be locked manually by clicking the lock icon, or it can be locked automatically if the “Auto-Lock” setting in the “Settings” tab is selected.</p>
                     <img alt="Image of auto-lock setting" src={Image5}></img>
                     <br/>
                     <br/>
                     <p>There are some other settings you can play around with in the “Settings” tab with short info bubbles about what they do</p>
-
-                    <p>You can add channels to your list by either typing their respective channel id into the box (along the format of “UC...”) or you can go to the youtube channel page and click the “Add Channel to Block List” button directly. Note, that the popup must be unlocked for this to work.</p>
+                    <br/>
+                    <p>You can add channels to your list by typing their channel id or their channel handle into the box. (Press Enter to Submit) 
+                        <br/>
+                        <br/>
+                        Channel ids have 24 digits the format "UC...". For example, the channel id for MrBeast is: <strong>UCX6OQ3DkcsbYNE6H8uQQuVA</strong>
+                        <br/>
+                        <br/>
+                        Channel handles are the characters with "@". For example, if a channel had the handle: "<strong>@Ssundee</strong>", you would type: "<strong>Ssundee</strong>", into the box.
+                        <br/>
+                        <br/>
+                        Alternatively you can go to the youtube channel page and click the “<strong>Add Channel to Block List</strong>” button directly. Note, that the popup must be unlocked for this to work.
+                    </p>
                     <img className='button-image' alt="Image of 'Add Channel to Block List' Button" src={Image2}></img>
-                    <p>Once added the channels should appear in the block list</p>
+                    <p>Once added, the channels should appear in the block list</p>
                     <img alt="Image of filled blocklist" src={Image3}></img>
                     <br/>
                     <br/>
                     <p>Alternatively, you can upload a previously exported block list in the “Additional” tab. These files can be sent to and received by anyone, as long as they have not been tampered with.</p>
                     <img alt="Image of 'Additionals' tab" src={Image4}></img>
                     <br/>
+                    <br/>
                     <p>Now that you have a list of channels, you can pick one of two modes: blacklist or whitelist.</p>
                     <p>Blacklist will block content from any channels on the list</p>
                     <p>Whitelist will block content from any channels that are not on the list</p>
-                    <p>With that you’re all set!</p>
+                    <p>With that you're all set!</p>
                     <p>Any feedback is appreciated. Please leave a review or send me an email for any suggestions or bugs. My email can be found in the chrome webstore Developer section.</p>
                 </Modal.Body>
                 <Modal.Footer>

@@ -132,7 +132,7 @@ function BlackWhiteListToggle(props:{blacklistInfo:boolean, showBlacklistInfo:()
                     </svg>
                     <Modal show={props.blacklistInfo} onHide={props.hideBlacklistInfo}>
                         <Modal.Header closeButton>
-                            <Modal.Title>BlackList</Modal.Title>
+                            <Modal.Title>Mode</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
                             <div className='modal-body'>
@@ -141,7 +141,7 @@ function BlackWhiteListToggle(props:{blacklistInfo:boolean, showBlacklistInfo:()
                                 (ie. if MrBeast is on the list with <strong>blacklist</strong> mode, all videos from MrBeast will be blocked)
                                 <br></br>
                                 <br></br>
-                                White list mode will block all channels that are NOT on the list
+                                Whitelist mode will block all channels that are NOT on the list
                                 <br/>
                                 (ie. if MrBeast is the only channel on the list with <strong>whitelist</strong> mode, the videos from MrBeast will be the only videos not blocked)
                             </div>
@@ -210,7 +210,7 @@ function BlockRecommended(props: { channelInfo:boolean, showChannelInfo:()=>void
                             <div className='modal-body'>
                                 <p>{`Currently: ${props.blockSearch ? 'On' : 'Off'}`}</p>
                                 <br/>
-                                <p>{`Blocks all Youtube search results from blocked channels`}</p>
+                                <p>{`Blocks all Youtube videos from blocked channels in the search page`}</p>
                             </div>
                            
                         </Modal.Body>
@@ -241,7 +241,7 @@ function BlockRecommended(props: { channelInfo:boolean, showChannelInfo:()=>void
                             <div className='modal-body'>
                                 <div>{`Currently: ${props.hideChannels ? 'On' : 'Off'}`}</div>
                                 <br/>
-                                <p>{`Hides all blocked channels on from the sidebar, search results, and hides videos on the channel page`}</p>
+                                <p>{`Hides all blocked channels on from the sidebar, search results, and hides content on the channel page`}</p>
                             </div>
                         </Modal.Body>
                         <Modal.Footer>
