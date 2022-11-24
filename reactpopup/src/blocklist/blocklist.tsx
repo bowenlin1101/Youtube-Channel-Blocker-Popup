@@ -132,13 +132,13 @@ function BlockTextBox(props:{isError:boolean,disabled:boolean,channelName:string
     if (props.disabled) {
         return(
             <div className='channel-box-wrapper'>
-                <input className={`channel-input-box${styles}`} disabled placeholder='Enter a Channel Id...' value={""} onChange={(e) => props.onChange(e)} type="text"></input>
+                <input className={`channel-input-box${styles}`} disabled placeholder='Enter a Channel Id or Handle...' value={""} onChange={(e) => props.onChange(e)} type="text"></input>
             </div>
         )
     } else {
         return(
             <div className='channel-box-wrapper'>
-                <input className={`channel-input-box${styles}`} placeholder='Enter a Channel Id...' value={props.channelName} onChange={(e) => props.onChange(e)} type="text"></input>
+                <input className={`channel-input-box${styles}`} placeholder='Enter a Channel Id or Handle...' value={props.channelName} onChange={(e) => props.onChange(e)} type="text"></input>
             </div>
         )
     }
