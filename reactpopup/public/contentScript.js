@@ -301,6 +301,7 @@ setInterval(function(){
                     var shelves = document.querySelectorAll("ytd-shelf-renderer")
                     var sectionRenderers = document.querySelectorAll("ytd-item-section-renderer")
                     var richGridRenderers = document.querySelectorAll("ytd-rich-grid-renderer")
+                    var muteButton = document.querySelector(".ytp-chrome-bottom").querySelector(".ytp-volume-area").querySelector("button")
                     if (result.blacklisted){
                         if (processedChannelList.includes(channelName)){
                             
@@ -315,6 +316,10 @@ setInterval(function(){
                             for (i of richGridRenderers){
                                 i.style.display = 'none'
                             }
+                            if (muteButton)
+                            if (!muteButton.getAttribute("title").includes("Unmute")){
+                                muteButton.click()
+                            }
                         } else {
                             for (i of shelves){
                                 i.style.display = 'block'
@@ -326,6 +331,10 @@ setInterval(function(){
 
                             for (i of richGridRenderers){
                                 i.style.display = 'block'
+                            }
+                            if (muteButton)
+                            if (muteButton.getAttribute("title").includes("Unmute")){
+                                muteButton.click()
                             }
                         }
                     } else {
@@ -342,6 +351,10 @@ setInterval(function(){
                             for (i of richGridRenderers){
                                 i.style.display = 'none'
                             }
+                            if (muteButton)
+                            if (!muteButton.getAttribute("title").includes("Unmute")){
+                                muteButton.click()
+                            }
                         } else {
                             for (i of shelves){
                                 i.style.display = 'block'
@@ -353,6 +366,10 @@ setInterval(function(){
 
                             for (i of richGridRenderers){
                                 i.style.display = 'block'
+                            }
+                            if (muteButton)
+                            if (muteButton.getAttribute("title").includes("Unmute")){
+                                muteButton.click()
                             }
                         }
                     }
