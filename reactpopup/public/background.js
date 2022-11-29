@@ -1,6 +1,5 @@
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse){
-        console.log(request.channelurl)
             var channelpageurl = 
             fetch(request.channelurl)
             .then(x => {
@@ -16,7 +15,7 @@ chrome.runtime.onMessage.addListener(
             })
             
 
-            var channelid = 
+            var channelIdandName = 
             fetch(request.channelurl)
             .then(x => {
                 if (x.ok){
@@ -25,7 +24,20 @@ chrome.runtime.onMessage.addListener(
             })    
             .then(y => /"canonical" href="(.*?)"><link/.exec(y))
             .then(z => z[z.length-1])
-            .then(a => {return a})
+            .then(a => {
+                var cId = a.split('/')[a.split('/').length-1]
+                var cNamePromise = fetch(request.channelurl)
+                .then(x => {
+                    if (x.ok){
+                        return x.text()
+                    }
+                })
+                .then(y => new RegExp(`"channelId":"${cId}","title":"\(\.\*\?\)"`).exec(y))
+                .then(z => z[z.length-1])
+                return cNamePromise.then((value) => {
+                    return([a,value])
+                })
+            })
             .catch(() => {
                 chrome.runtime.sendMessage({package: "error"});
             });
@@ -39,55 +51,29 @@ chrome.runtime.onMessage.addListener(
             .catch(() => {
                 chrome.runtime.sendMessage({package: "error"});
             });
-
-            var channelname = fetch(request.channelurl)
-            .then(x=> x.text())
-            .then (y=> [/"title":{"accessibility":{"accessibilityData":{"label":"(.*?)ago/g.exec(y),/"accessibilityData":{"label":"(.*?)ago/g.exec(y)])
-            .then(b=>{
-                if (typeof(b[0]) != "object"){
-                    return b[0]
-                } else {
-                    return b[0]
-                }
-            })
-            .then(b => b[b.length-1])
-            .then(c=> c.split(" by "))
-            .then(d => d[d.length-1])
-            .then(e => e.split(" "))
-            .then(f => f.splice(0,f.length-3))
-            .then(g => {
-                var name = "";
-                for (i of g){
-                    name += `${i} `;
-                }
-                return name.replace("Streamed","")
-            })
-            .then((h) => {
-                if (h.replace(/ /g,"") == ""){
-                    throw new Error
-                } else {
-                    return h
-                }
-            })
-            .catch(() => {
-                chrome.runtime.sendMessage({package: "error"});
-            });
-
-            Promise.all([channelid, channelname,link,channelpageurl]).then((values) => {
+            Promise.all([channelIdandName,link,channelpageurl]).then((values) => {
+                console.log(values)
+                var channelid = values[0][0]
+                var channelname = values[0][1]
+                var link = values[1]
+                var channelpageurl = values[2]
                 if (request.query == "popup"){
                     chrome.runtime.sendMessage({
-                        package: "channelinfo",value: {channelid: values[0],channelname: values[1], link: values[2],channelpageurl:values[3]}
+                        package: "channelinfo",value: {channelid: channelid,channelname: channelname, link: link,channelpageurl:channelpageurl}
                     });
                 } else if (request.query == "contentScript"){
- 
-                    if (values[1] && values[2] && values[3])
+                    console.log(channelid)
+                    console.log(channelname)
+                    console.log(link)
+                    console.log(channelpageurl)
+                    if (channelname && link && channelpageurl)
                     chrome.storage.sync.get(['blockedchannelids'], function(result) {
-                        if (!result.blockedchannelids.some(object => object.channelid == values[0]) || result.blockedchannelids == []){
+                        if (!result.blockedchannelids.some(object => object.channelid == channelid) || result.blockedchannelids == []){
                             var tempblockedchannelids = result.blockedchannelids 
-                            tempblockedchannelids.push({channelid: values[0], channelname: values[1], link: values[2], channelpageurl:values[3]})
+                            tempblockedchannelids.push({channelid: channelid, channelname: channelname, link: link, channelpageurl:channelpageurl})
                             chrome.storage.sync.set({blockedchannelids: tempblockedchannelids})
                             chrome.runtime.sendMessage({
-                                package: "refresh", value: {channelid: values[0],channelname: values[1], link: values[2],channelpageurl:values[3]}
+                                package: "refresh", value: {channelid: channelid,channelname: channelname, link: link,channelpageurl:channelpageurl}
                             });
                         }
                     })
