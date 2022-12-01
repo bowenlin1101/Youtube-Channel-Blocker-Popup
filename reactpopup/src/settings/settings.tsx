@@ -108,11 +108,11 @@ function Settings(props:{activeTab:string,unlocked:boolean}){
 
     if (props.activeTab === "settings"){
         return(
-            <>
+            <div className='tab-padding'>
                 <BlackWhiteListToggle blacklistInfo={blacklistInfo} showBlacklistInfo={showBlackListInfo} hideBlacklistInfo={hideBlackListInfo} blacklist={blacklist} handleDropDown={handleDropDown}/>
                 <BlockRecommended channelInfo={channelInfo} showChannelInfo={showChannelInfo} hideChannelInfo={hideChannelInfo} searchInfo={searchInfo} showSearchInfo={showSearchInfo} hideSearchInfo={hideSearchInfo} shortsInfo={shortsInfo} showShortsInfo={showShortsInfo} hideShortsInfo={hideShortsInfo} disabled={!props.unlocked} blockShorts={blockShorts} blockSearch = {blockSearch} hideChannels={hideChannels} handleShorts={handleShorts} handleSearch={handleSearch} handleChannels={handleChannels}/>
                 <AutoLock autoLockInfo={autoLockInfo} showAutoLockInfo={showAutoLockInfo} hideAutoLockInfo={hideAutoLockInfo}  autoLock={autoLock} handleAutoLock={handleAutoLock}/>
-            </>
+            </div>
 
         )
     } else {
