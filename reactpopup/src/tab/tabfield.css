@@ -22,8 +22,6 @@
     flex-direction: column;
     height: 300px;
     width: 80%;
-    padding: 10px;
-    padding-bottom: 0px;
     border-top: none;
     background-color: var(--tabcontentbg);
     color: var(--bordercolor);
