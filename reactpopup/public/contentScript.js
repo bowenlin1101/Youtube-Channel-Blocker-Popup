@@ -12,7 +12,7 @@ setInterval(function(){
     }
     // get the current url location
     url = window.location.href;
-    chrome.storage.sync.get(['blacklisted','blockShorts','blockSearch','blockChannels','blockedchannelids','unlocked'], function(result) {
+    chrome.storage.sync.get(['blacklisted','blockShorts','blockSearch','blockChannels','blockedchannelids','unlocked','removeBlockedElements'], function(result) {
         //initialize processed list for easy comparison
         var processedChannelList = [];
 
@@ -187,7 +187,7 @@ setInterval(function(){
                 }
                 //block videos
 
-                function blockvideos(i){
+                function blockVideosText(i){
                     for (j of i.querySelectorAll("a")){
                         j.remove()
                     }
@@ -200,22 +200,33 @@ setInterval(function(){
                     blockedSign.style.lineHeight = i.querySelector("ytd-thumbnail").height;
                     blockedSign.style.textAlign = "center";
                     blockedSign.style.maxHeight = "240px"
-                    // document.querySelector("ytd-thumbnail.ytd-video-renderer:before").style.display = "none"
 
                     i.querySelector("ytd-thumbnail").appendChild(blockedSign)
                     i.querySelector(".text-wrapper").remove()
                     i.setAttribute("data-sorted", "true")
 
                 }
+                function blockVideosDelete(i){
+                    i.remove()
+                }
+
                 for (i of document.getElementsByTagName("YTD-VIDEO-RENDERER")){
                     if (i.getAttribute("data-sorted") == undefined){
                         if (result.blacklisted){
                             if (processedChannelList.includes(i.getAttribute("data-channelname").toLowerCase().replace(/ /g,"")) || processedChannelIds.some(id => id.includes(i.getAttribute("data-channelid").toLowerCase().replace(/ /g,"")))){
-                                blockvideos(i)
+                                if (result.removeBlockedElements){
+                                    blockVideosDelete(i)
+                                } else {
+                                    blockVideosText(i)
+                                }
                             }
                         } else {
                             if (!processedChannelList.includes(i.getAttribute("data-channelname").toLowerCase().replace(/ /g,"")) && !processedChannelIds.some(id => id.includes(i.getAttribute("data-channelid").toLowerCase().replace(/ /g,"")))){
-                                blockvideos(i)
+                                if (result.removeBlockedElements){
+                                    blockVideosDelete(i)
+                                } else {
+                                    blockVideosText(i)
+                                }
                             }
                         }
                     }
@@ -243,6 +254,7 @@ setInterval(function(){
                 var header = document.querySelector("#inner-header-container")
                 var channelNameContainer = document.querySelector("ytd-channel-name#channel-name")
                 var channelName = channelNameContainer.querySelector("yt-formatted-string").innerText.replace(/ /g,"").toLowerCase()
+                console.log(channelName)
                 if (document.querySelector("#addChannel") == null){
                     var buttonContainer = document.createElement("div")
                     buttonContainer.style.width = "20em"
@@ -462,29 +474,30 @@ setInterval(function(){
                     topSidebar.querySelector("#items").childNodes[1].style.display = 'none'
                 }
             }
+            
             // blocks the preview of blocked channel videos
-            if (document.getElementById("video-preview-container")){
-                if (document.getElementById("video-preview-container").querySelector("video")){
-                    if (document.getElementById("video-preview-container").querySelector("video").src != ""){
-                        for (i of document.getElementById("video-preview-container").querySelectorAll("#text")){
-                            if (i.childNodes[0].tagName == "A"){
-                                if (result.blacklisted){
-                                    if (processedChannelList.includes(i.childNodes[0].innerText.toLowerCase().replace(/ /g, ""))|| processedChannelIds.includes(i.childNodes[0].href.toLowerCase().replace(/ /g, ""))){
-                                        document.getElementById("video-preview-container").style.display = "none"
-                                    } else {
-                                        document.getElementById("video-preview-container").style.display = "block"
-                                    }
-                                } else {
-                                    if (!processedChannelList.includes(i.childNodes[0].innerText.toLowerCase().replace(/ /g, "")) && !processedChannelIds.includes(i.childNodes[0].href.toLowerCase().replace(/ /g, ""))){
-                                        document.getElementById("video-preview-container").style.display = "none"
-                                    } else {
-                                        document.getElementById("video-preview-container").style.display = "block"
-                                    }
-                                }
-                            }
+            var vpc = document.getElementById("video-preview-container");
+            if (vpc){
+                if (result.blacklisted){
+                    if (processedChannelList.includes(document.getElementById("video-preview-container").querySelectorAll("#text")[1].innerHTML.toLowerCase().replace(/ /g,""))){
+                        if (vpc.style.display == ""){
+                            vpc.style.display = 'none';
                         }
-                    }  
-                } 
+                    } else {
+                        if (vpc.style.display == 'none'){
+                            vpc.style.display = '';
+                        }
+                    }
+                } else {
+                    if (!processedChannelList.includes(document.getElementById("video-preview-container").querySelectorAll("#text")[1].innerHTML.toLowerCase().replace(/ /g,""))){
+                        if (vpc.style.display == ""){
+                            vpc.style.display = 'none';
+                        }
+                    } else {
+                        if (vpc.style.display == 'none')
+                            vpc.style.display = '';
+                    }
+                }
             }
             
                 // check whether the player queue is open
