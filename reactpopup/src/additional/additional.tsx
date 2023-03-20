@@ -1,19 +1,80 @@
-import {useState} from "react";
-import Button from 'react-bootstrap/Button'
-import './additional.css'
+import {ChangeEventHandler, useState} from "react";
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import './additional.css';
 
 function Additional(props:{unlocked:boolean, activeTab:string}){
+    const [removeElements,setRemoveElements] = useState(false)
+    const [removeElementsInfo, setRemoveElementsInfo] = useState(false)
+    chrome.storage.sync.get(['removeBlockedElements'], (result) => {
+        setRemoveElements(result.removeBlockedElements)
+    })
+
+    function showRemoveElementsInfo(){
+        setRemoveElementsInfo(true)
+    }
+
+    function hideRemoveElementsInfo(){
+        setRemoveElementsInfo(false)
+    }
+
+    function handleRemoveElements() {
+        chrome.storage.sync.set({removeBlockedElements: !removeElements})
+        setRemoveElements(!removeElements)
+    }
 
     if (props.activeTab === "additional"){
         return(
-            <div className="import-export-container">
-                <ExportList/>
-                <ImportList/>
-            </div>    
+            <div className = "additional-container">
+                <div className="hide-elements-container">
+                    <RemoveBlockedElements removeElements={removeElements} removeElementsInfo={removeElementsInfo} hideRemoveElementsInfo = {hideRemoveElementsInfo} showRemoveElementsInfo = {showRemoveElementsInfo} handleRemoveElements={handleRemoveElements}/>
+                </div>   
+                <div className="import-export-container">
+                    <ExportList/>
+                    <ImportList/>
+                </div>
+            </div>
         )
     } else {
         return(null)
     }
+}
+
+function RemoveBlockedElements(props:{removeElements: boolean, removeElementsInfo: boolean, showRemoveElementsInfo: () => void, hideRemoveElementsInfo: () => void, handleRemoveElements: ChangeEventHandler}){
+
+
+    return(
+        <div className='channel-box'>
+        <div className={props.removeElements ? `channel-indicator checkbox-width-control active` : `channel-indicator checkbox-width-control`}>
+            Remove Elements
+            <svg xmlns="http://www.w3.org/2000/svg" onClick={props.showRemoveElementsInfo} width="16" height="16" fill="currentColor" className="bi bi-info-circle info-bubble channel-info-bubble" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+            </svg>
+            <Modal show={props.removeElementsInfo} onHide={props.hideRemoveElementsInfo}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Remove Elements</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className='modal-body'>
+                        <div>{`Currently: ${props.removeElements ? 'On' : 'Off'}`}</div>
+                        <br/>
+                        <p>{`This setting is purely visual! Removes blocked video elements from view on the home screen and on search. (Note, this may result in a more laggy experience if you are using whitelist mode, as Youtube will continuously try to load in more videos which will get blocked)`}</p>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                <Button variant="secondary" onClick={props.hideRemoveElementsInfo}>
+                    Close
+                </Button>
+                </Modal.Footer>
+            </Modal>
+            </div>
+        <label className='switch'>
+            <input className='block-checkbox' type="checkbox" checked={props.removeElements} onChange={props.handleRemoveElements}></input>
+            <span className='slider'></span>
+        </label>
+        </div>
+    )
 }
 
 function ExportList(){

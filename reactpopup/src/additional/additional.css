@@ -21,3 +21,14 @@
 .load-icon{
     margin-right: 5px;
 }
+
+.additional-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.hide-elements-container{
+    margin: 10px;
+}
