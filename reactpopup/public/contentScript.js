@@ -219,22 +219,29 @@ setInterval(function(){
                 }
 
                 for (i of document.getElementsByTagName("YTD-VIDEO-RENDERER")){
-                    if (i.getAttribute("data-sorted") == undefined){
+                    if (!result.removeBlockedElements){
+                        if (i.getAttribute("data-sorted") == undefined){
+                            if (result.blacklisted){
+                                if (processedChannelList.includes(i.getAttribute("data-channelname").toLowerCase().replace(/ /g,"")) || processedChannelIds.some(id => id.includes(i.getAttribute("data-channelid").toLowerCase().replace(/ /g,"")))){
+                                    blockVideosText(i)
+                                    
+                                }
+                            } else {
+                                if (!processedChannelList.includes(i.getAttribute("data-channelname").toLowerCase().replace(/ /g,"")) && !processedChannelIds.some(id => id.includes(i.getAttribute("data-channelid").toLowerCase().replace(/ /g,"")))){
+                                    blockVideosText(i)
+                                    
+                                }
+                            }
+                        }
+                    } else {
                         if (result.blacklisted){
                             if (processedChannelList.includes(i.getAttribute("data-channelname").toLowerCase().replace(/ /g,"")) || processedChannelIds.some(id => id.includes(i.getAttribute("data-channelid").toLowerCase().replace(/ /g,"")))){
-                                if (result.removeBlockedElements){
-                                    blockVideosDelete(i)
-                                } else {
-                                    blockVideosText(i)
-                                }
+                                blockVideosDelete(i);
+
                             }
                         } else {
                             if (!processedChannelList.includes(i.getAttribute("data-channelname").toLowerCase().replace(/ /g,"")) && !processedChannelIds.some(id => id.includes(i.getAttribute("data-channelid").toLowerCase().replace(/ /g,"")))){
-                                if (result.removeBlockedElements){
-                                    blockVideosDelete(i)
-                                } else {
-                                    blockVideosText(i)
-                                }
+                                blockVideosDelete(i)
                             }
                         }
                     }
