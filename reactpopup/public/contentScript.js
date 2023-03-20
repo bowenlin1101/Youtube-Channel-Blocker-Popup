@@ -160,6 +160,7 @@ setInterval(function(){
                             var anchorName = anchor.innerHTML.toLowerCase().replace(/ /g,"")
                             var anchorid = anchor.href.toLowerCase().replace(/ /g, "")
                             var playercontainer = anchor.closest("ytd-reel-video-renderer").querySelector("#player-container")
+                            console.log(anchorName)
                             if (result.blacklisted){
                                 if (processedChannelList.includes(anchorName) || processedChannelIds.includes(anchorid)){
                                     blockShorts(playercontainer)
@@ -174,6 +175,13 @@ setInterval(function(){
                 }
             }
         } else if (url.includes("www.youtube.com/results?search_query")){
+            if (result.blockShorts){
+                var shortsContainer = document.querySelector("ytd-reel-shelf-renderer");
+                if (shortsContainer){
+                    shortsContainer.remove()
+                }
+            }
+
             if (result.blockSearch){     
                for (i of document.getElementsByTagName("YTD-VIDEO-RENDERER")) {
                     //put channel data a ytd renderers        
@@ -207,7 +215,7 @@ setInterval(function(){
 
                 }
                 function blockVideosDelete(i){
-                    i.remove()
+                    i.style.display = 'none';
                 }
 
                 for (i of document.getElementsByTagName("YTD-VIDEO-RENDERER")){
@@ -453,11 +461,19 @@ setInterval(function(){
                         if (i.getAttribute("data-channelname")){
                             if (result.blacklisted){
                                 if (processedChannelList.includes(i.getAttribute("data-channelname").toLowerCase().replace(/ /g,'')) || processedChannelIds.includes(i.getAttribute("data-channelid").toLowerCase().replace(/ /g,''))){
-                                    hideVideoElements()
+                                    if (result.removeBlockedElements){
+                                        i.style.display = "none";
+                                    } else {
+                                        hideVideoElements()
+                                    }
                                 }
                             } else {
                                 if (!processedChannelList.includes(i.getAttribute("data-channelname").toLowerCase().replace(/ /g,'')) && !processedChannelIds.includes(i.getAttribute("data-channelid").toLowerCase().replace(/ /g,''))){
-                                    hideVideoElements()
+                                    if (result.removeBlockedElements){
+                                        i.style.display = "none";
+                                    } else {
+                                        hideVideoElements()
+                                    }
                                 }
                             }   
                         }
@@ -474,7 +490,7 @@ setInterval(function(){
                     topSidebar.querySelector("#items").childNodes[1].style.display = 'none'
                 }
             }
-            
+
             // blocks the preview of blocked channel videos
             var vpc = document.getElementById("video-preview-container");
             if (vpc){
@@ -579,7 +595,7 @@ setInterval(function(){
             }
         }
     })
-}, 500)
+}, 250)
 
 const addChannelListener = document.addEventListener("click", (e) => {
     if (e.target.tagName = "BUTTON"){
