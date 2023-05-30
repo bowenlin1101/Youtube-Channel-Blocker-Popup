@@ -15,7 +15,7 @@ function Dashboard() {
   const [unlocked, setUnlocked] = useState(false)
   useEffect(() => {
 
-    chrome.storage.sync.get(['unlocked', 'blacklisted','blockShorts', 'blockSearch', 'blockChannels', 'autoLock', "password"], (result) => {
+    chrome.storage.sync.get(['unlocked', 'blacklisted','blockShorts', 'blockSearch', 'blockChannels', 'autoLock', "password",'removeBlockedElements'], (result) => {
       if(result.unlocked === undefined) {
         chrome.storage.sync.set({unlocked: false})
       }
@@ -37,6 +37,10 @@ function Dashboard() {
       if (result.password === undefined){
         chrome.storage.sync.set({password:""})
       }
+      if (result.removeBlockedElements === undefined){
+        chrome.storage.sync.set({removeBlockedElements: false});
+      }
+
       setUnlocked(result.unlocked)
 
       setInterval(() => {
