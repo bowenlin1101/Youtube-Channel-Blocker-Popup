@@ -418,6 +418,9 @@ setInterval(function(){
                 for (i of document.getElementsByTagName("ytd-rich-item-renderer")){
                     function hideVideoElements(){
                         //clone to remove hover event listeners that will prompt the auto-play feature
+                        if (i.querySelector("#thumbnail")){
+                            i.querySelector("#thumbnail").remove()
+                        }
                         var videorenderer = i.querySelector("#dismissible").childNodes[0]
                         if (videorenderer.getAttribute('data-isClone') == undefined){
                             var clone = videorenderer.cloneNode(true)
@@ -440,24 +443,6 @@ setInterval(function(){
                                     // i.remove()
                                 }
                                 parent.querySelector("#details").style.display = 'none';
-                                // parent.querySelector("#details").remove()
-                            }
-                            if (!parent.querySelector(`[data-class="block-sign"]`)){
-                                var center = document.createElement("center");
-                                center.style.display = "flex"
-                                center.style.flexDirection = "column"
-                                center.style.alignItems = "center"
-                                center.style.justifyContent = "center"
-                                center.style.height = "100%"
-                                var blockedSign = document.createElement("h3");
-                                blockedSign.setAttribute("data-class", "block-sign")
-                                blockedSign.innerHTML = "BLOCKED";
-                                blockedSign.style.color = "	#C0C0C0";
-                                blockedSign.style.fontSize = "3em";
-                                center.appendChild(blockedSign)
-                                parent.querySelectorAll("a#thumbnail")[0].appendChild(center)
-                            } else {
-                                parent.querySelector(`[data-class="block-sign"]`).parentElement.style.display = "flex"
                             }
                             i.setAttribute("data-processed", true)
                             i.setAttribute("data-sort-type", result.blacklisted)
@@ -497,32 +482,6 @@ setInterval(function(){
                     topSidebar.querySelector("#items").childNodes[1].style.display = 'none'
                 }
             }
-
-            // blocks the preview of blocked channel videos
-            var vpc = document.getElementById("video-preview-container");
-            if (vpc){
-                if (result.blacklisted){
-                    if (processedChannelList.includes(document.getElementById("video-preview-container").querySelectorAll("#text")[1].innerHTML.toLowerCase().replace(/ /g,""))){
-                        if (vpc.style.display == ""){
-                            vpc.style.display = 'none';
-                        }
-                    } else {
-                        if (vpc.style.display == 'none'){
-                            vpc.style.display = '';
-                        }
-                    }
-                } else {
-                    if (!processedChannelList.includes(document.getElementById("video-preview-container").querySelectorAll("#text")[1].innerHTML.toLowerCase().replace(/ /g,""))){
-                        if (vpc.style.display == ""){
-                            vpc.style.display = 'none';
-                        }
-                    } else {
-                        if (vpc.style.display == 'none')
-                            vpc.style.display = '';
-                    }
-                }
-            }
-            
                 // check whether the player queue is open
             if (document.querySelector("ytd-miniplayer")){
                 if (document.querySelector("ytd-miniplayer").querySelector("video")){
