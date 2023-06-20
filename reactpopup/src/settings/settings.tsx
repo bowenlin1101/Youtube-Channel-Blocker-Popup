@@ -19,7 +19,7 @@ function Settings(props:{activeTab:string,unlocked:boolean}){
     const [channelInfo, setChannelInfo] = useState(false)
     const [autoLockInfo, setAutoLockInfo] = useState(false)
 
-    chrome.storage.sync.get(['blacklisted', 'blockShorts','blockChannels','blockSearch','autoLock'], (result) => {
+    chrome.storage.local.get(['blacklisted', 'blockShorts','blockChannels','blockSearch','autoLock'], (result) => {
         setBlackList(result.blacklisted)
         setBlockShorts(result.blockShorts)
         setBlockSearch(result.blockSearch)
@@ -65,14 +65,14 @@ function Settings(props:{activeTab:string,unlocked:boolean}){
 
     function handleAutoLock(){
         if (props.unlocked){
-            chrome.storage.sync.set({autoLock: !autoLock})
+            chrome.storage.local.set({autoLock: !autoLock})
             if (!autoLock){
                 var today = new Date()
                 today.setMinutes(today.getMinutes() + 5)
                 console.log("lockTime set")
-                chrome.storage.sync.set({lockTime: today.getTime()})
+                chrome.storage.local.set({lockTime: today.getTime()})
             } else {
-                chrome.storage.sync.set({lockTime: false})
+                chrome.storage.local.set({lockTime: false})
             }
             setAutoLock(!autoLock)
         }
@@ -80,28 +80,28 @@ function Settings(props:{activeTab:string,unlocked:boolean}){
 
     function handleDropDown(){
         if (props.unlocked){
-            chrome.storage.sync.set({blacklisted: !blacklist})
+            chrome.storage.local.set({blacklisted: !blacklist})
             setBlackList(!blacklist)
         }
     }
 
     function handleShorts(){
         if (props.unlocked){
-            chrome.storage.sync.set({blockShorts: !blockShorts})
+            chrome.storage.local.set({blockShorts: !blockShorts})
             setBlockShorts(!blockShorts)
         }
     }
     
     function handleSearch(){
         if (props.unlocked){
-            chrome.storage.sync.set({blockSearch: !blockSearch})
+            chrome.storage.local.set({blockSearch: !blockSearch})
             setBlockSearch(!blockSearch)
         }
     }
 
     function handleChannels() {
         if (props.unlocked){
-            chrome.storage.sync.set({blockChannels: !hideChannels})
+            chrome.storage.local.set({blockChannels: !hideChannels})
             setHideChannels(!hideChannels)
         }
     }

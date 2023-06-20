@@ -12,7 +12,7 @@ setInterval(function(){
     }
     // get the current url location
     url = window.location.href;
-    chrome.storage.sync.get(['blacklisted','blockShorts','blockSearch','blockChannels','blockedchannelids','unlocked','removeBlockedElements'], function(result) {
+    chrome.storage.local.get(['blacklisted','blockShorts','blockSearch','blockChannels','blockedchannelids','unlocked','removeBlockedElements'], function(result) {
         //initialize processed list for easy comparison
         var processedChannelList = [];
 
@@ -551,12 +551,12 @@ setInterval(function(){
         }
     })
     //If popup is not open but Youtube tab is, lock when locktime is up
-    chrome.storage.sync.get(["lockTime"], (result) => {
+    chrome.storage.local.get(["lockTime"], (result) => {
         if (result.lockTime){
             if (result.lockTime < new Date().getTime()){
                 console.log("time up")
-                chrome.storage.sync.set({lockTime: false})
-                chrome.storage.sync.set({unlocked: false})
+                chrome.storage.local.set({lockTime: false})
+                chrome.storage.local.set({unlocked: false})
                 chrome.runtime.sendMessage({query: "timeup"})
             }
         }
@@ -565,7 +565,7 @@ setInterval(function(){
 
 const addChannelListener = document.addEventListener("click", (e) => {
     if (e.target.tagName = "BUTTON"){
-        chrome.storage.sync.get(["unlocked",'blockedchannelids'], (result) => {
+        chrome.storage.local.get(["unlocked",'blockedchannelids'], (result) => {
             if (e.target.id == "addChannel" && result.unlocked){
                 chrome.runtime.sendMessage({query:"contentScript", channelurl: url})
             }

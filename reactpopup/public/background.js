@@ -67,11 +67,11 @@ chrome.runtime.onMessage.addListener(
                 console.log(link)
                 console.log(channelpageurl)
                 if (channelname && link && channelpageurl)
-                chrome.storage.sync.get(['blockedchannelids'], function(result) {
+                chrome.storage.local.get(['blockedchannelids'], function(result) {
                     if (!result.blockedchannelids.some(object => object.channelid == channelid) || result.blockedchannelids == []){
                         var tempblockedchannelids = result.blockedchannelids 
                         tempblockedchannelids.push({channelid: channelid, channelname: channelname, link: link, channelpageurl:channelpageurl})
-                        chrome.storage.sync.set({blockedchannelids: tempblockedchannelids})
+                        chrome.storage.local.set({blockedchannelids: tempblockedchannelids})
                         chrome.runtime.sendMessage({
                             package: "refresh", value: {channelid: channelid,channelname: channelname, link: link,channelpageurl:channelpageurl}
                         });

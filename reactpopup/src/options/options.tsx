@@ -53,7 +53,7 @@ function Options(){
     }
 
     function handleSave(){
-        chrome.storage.sync.set({blockedchannelids: data})
+        chrome.storage.local.set({blockedchannelids: data})
         hideModal()
     }
 

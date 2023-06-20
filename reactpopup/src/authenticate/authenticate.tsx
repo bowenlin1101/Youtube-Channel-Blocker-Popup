@@ -9,8 +9,8 @@ import './authenticate.css'
 function LockBox(props:{unlocked:boolean,setUnlocked:Function}){
     function handleClick(){
         props.setUnlocked(false)
-        chrome.storage.sync.set({unlocked:false})
-        chrome.storage.sync.set({lockTime:false})
+        chrome.storage.local.set({unlocked:false})
+        chrome.storage.local.set({lockTime:false})
     }
     if (props.unlocked){
         return(
@@ -49,7 +49,7 @@ function Authenticate(props:{unlocked:boolean ,setUnlocked:Function}){
     const [modalFailed, setModalFailed] = useState('')
     useEffect(() => {
 
-        chrome.storage.sync.get(['password'], (result) => {
+        chrome.storage.local.get(['password'], (result) => {
             setPassword(result.password)
         })     
     })
@@ -83,7 +83,7 @@ function Authenticate(props:{unlocked:boolean ,setUnlocked:Function}){
         if (modalPasswordValue.replace(/ /g, '') !== '' && modalPasswordValue === modalConfirmValue){
             setShowPasswordModal(false)
             setPassword(modalConfirmValue)
-            chrome.storage.sync.set({password:modalConfirmValue})
+            chrome.storage.local.set({password:modalConfirmValue})
         } else {
             setModalFailed(' shake')
         }
@@ -95,12 +95,12 @@ function Authenticate(props:{unlocked:boolean ,setUnlocked:Function}){
                 console.log(password)
                     if (passwordValue === password){
                         props.setUnlocked(true)
-                        chrome.storage.sync.set({unlocked:true})
-                        chrome.storage.sync.get(['autoLock'], (result) => {
+                        chrome.storage.local.set({unlocked:true})
+                        chrome.storage.local.get(['autoLock'], (result) => {
                             if (result.autoLock){
                                 var today = new Date()
                                 today.setMinutes(today.getMinutes() + 5)
-                                chrome.storage.sync.set({lockTime: today.getTime()} )
+                                chrome.storage.local.set({lockTime: today.getTime()} )
                             }
                         })
                     } else {

@@ -6,7 +6,7 @@ import './additional.css';
 function Additional(props:{unlocked:boolean, activeTab:string}){
     const [removeElements,setRemoveElements] = useState(false)
     const [removeElementsInfo, setRemoveElementsInfo] = useState(false)
-    chrome.storage.sync.get(['removeBlockedElements'], (result) => {
+    chrome.storage.local.get(['removeBlockedElements'], (result) => {
         setRemoveElements(result.removeBlockedElements)
     })
 
@@ -19,7 +19,7 @@ function Additional(props:{unlocked:boolean, activeTab:string}){
     }
 
     function handleRemoveElements() {
-        chrome.storage.sync.set({removeBlockedElements: !removeElements})
+        chrome.storage.local.set({removeBlockedElements: !removeElements})
         setRemoveElements(!removeElements)
     }
 
@@ -88,7 +88,7 @@ function ExportList(){
     }
 
     function updateData(){
-        chrome.storage.sync.get('blockedchannelids', (result) => {
+        chrome.storage.local.get('blockedchannelids', (result) => {
             setData(result.blockedchannelids)
             setIsLoading(false)
         })
