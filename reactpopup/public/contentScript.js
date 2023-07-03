@@ -10,6 +10,51 @@ setInterval(function(){
         history.pushState({}, window.title, window.url)
         window.location.replace(window.location)
     }
+
+    chrome.storage.sync.get(['unlocked', 'blacklisted','blockShorts', 'blockSearch', 'blockChannels', 'autoLock', "password",'removeBlockedElements'], (syncResult) => {
+        chrome.storage.local.get(['unlocked', 'blacklisted','blockShorts', 'blockSearch', 'blockChannels', 'autoLock', "password",'removeBlockedElements'], (localResult) => {
+            if(syncResult.unlocked === undefined && localResult.unlocked === undefined) {
+                chrome.storage.local.set({unlocked: false})
+            } else if (syncResult.unlocked !== undefined && localResult.unlocked === undefined) {
+                chrome.storage.local.set({unlocked: syncResult.unlocked})
+            }
+            if(syncResult.blacklisted === undefined && localResult.blacklisted === undefined) {
+                chrome.storage.local.set({blacklisted: false})
+            } else if (syncResult.blacklisted !== undefined && localResult.blacklisted === undefined) {
+                chrome.storage.local.set({blacklisted: syncResult.blacklisted})
+            }
+            if(syncResult.blockShorts === undefined && localResult.blockShorts === undefined) {
+                chrome.storage.local.set({blockShorts: false})
+            } else if (syncResult.blockShorts !== undefined && localResult.blockShorts === undefined) {
+                chrome.storage.local.set({blockShorts: syncResult.blockShorts})
+            }
+            if(syncResult.blockSearch === undefined && localResult.blockSearch === undefined) {
+                chrome.storage.local.set({blockSearch: false})
+            } else if (syncResult.blockSearch !== undefined && localResult.blockSearch === undefined) {
+                chrome.storage.local.set({blockSearch: syncResult.blockSearch})
+            }
+            if(syncResult.blockChannels === undefined && localResult.blockChannels === undefined) {
+                chrome.storage.local.set({blockChannels: false})
+            } else if (syncResult.blockChannels !== undefined && localResult.blockChannels === undefined) {
+                chrome.storage.local.set({blockChannels: syncResult.blockChannels})
+            }
+            if(syncResult.autoLock === undefined && localResult.autoLock === undefined) {
+                chrome.storage.local.set({autoLock: false})
+            } else if (syncResult.autoLock !== undefined && localResult.autoLock === undefined) {
+                chrome.storage.local.set({autoLock: syncResult.autoLock})
+            }
+            if(syncResult.password === undefined && localResult.password === undefined) {
+                chrome.storage.local.set({password: ""})
+            } else if (syncResult.password !== undefined && localResult.password === undefined) {
+                chrome.storage.local.set({password: syncResult.password})
+            }
+            if(syncResult.removeBlockedElements === undefined && localResult.removeBlockedElements === undefined) {
+                chrome.storage.local.set({removeBlockedElements: false})
+            } else if (syncResult.removeBlockedElements !== undefined && localResult.removeBlockedElements === undefined) {
+                chrome.storage.local.set({removeBlockedElements: syncResult.removeBlockedElements})
+            }
+        })
+    })
     // get the current url location
     url = window.location.href;
     chrome.storage.local.get(['blacklisted','blockShorts','blockSearch','blockChannels','blockedchannelids','unlocked','removeBlockedElements'], function(result) {
