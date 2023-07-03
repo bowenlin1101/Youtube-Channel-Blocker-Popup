@@ -11,8 +11,8 @@ setInterval(function(){
         window.location.replace(window.location)
     }
 
-    chrome.storage.sync.get(['unlocked', 'blacklisted','blockShorts', 'blockSearch', 'blockChannels', 'autoLock', "password",'removeBlockedElements'], (syncResult) => {
-        chrome.storage.local.get(['unlocked', 'blacklisted','blockShorts', 'blockSearch', 'blockChannels', 'autoLock', "password",'removeBlockedElements'], (localResult) => {
+    chrome.storage.sync.get(['unlocked', 'blacklisted','blockShorts', 'blockSearch', 'blockChannels', 'autoLock', "password",'removeBlockedElements','blockedchannelids'], (syncResult) => {
+        chrome.storage.local.get(['unlocked', 'blacklisted','blockShorts', 'blockSearch', 'blockChannels', 'autoLock', "password",'removeBlockedElements','blockedchannelids'], (localResult) => {
             if(syncResult.unlocked === undefined && localResult.unlocked === undefined) {
                 chrome.storage.local.set({unlocked: false})
             } else if (syncResult.unlocked !== undefined && localResult.unlocked === undefined) {
@@ -52,6 +52,12 @@ setInterval(function(){
                 chrome.storage.local.set({removeBlockedElements: false})
             } else if (syncResult.removeBlockedElements !== undefined && localResult.removeBlockedElements === undefined) {
                 chrome.storage.local.set({removeBlockedElements: syncResult.removeBlockedElements})
+            }
+            if(syncResult.blockedchannelids === undefined && localResult.blockedchannelids === undefined) {
+                chrome.storage.local.set({blockedchannelids: []})
+            } else if (syncResult.blockedchannelids !== undefined && localResult.blockedchannelids === undefined) {
+                alert("Bug Fixed: You can now add more than 28 channels!")
+                chrome.storage.local.set({blockedchannelids: syncResult.blockedchannelids})
             }
         })
     })
