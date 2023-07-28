@@ -318,8 +318,11 @@ setInterval(function(){
         } else {
             if (url.includes("www.youtube.com/c/") || url.includes("youtube.com/channel/")|| url.includes("youtube.com/user") || url.includes("youtube.com/@")){
                 var header = document.querySelector("#inner-header-container")
-                var channelNameContainer = document.querySelector("ytd-channel-name#channel-name")
-                var channelName = channelNameContainer.querySelector("yt-formatted-string").innerText.replace(/ /g,"").toLowerCase()
+                var channelNameContainer = document.querySelector("#channel-header-container");
+                var channelName;
+                if (channelNameContainer){
+                    channelName = channelNameContainer.querySelector("#channel-name").querySelector("yt-formatted-string#text").innerText.replace(/ /g,"").toLowerCase()
+                }
                 console.log(channelName)
                 if (document.querySelector("#addChannel") == null){
                     var buttonContainer = document.createElement("div")
@@ -347,10 +350,10 @@ setInterval(function(){
                 }
 
                 if (result.blockedchannelids != undefined){
-                    var channeladded = false;
+                    var channelAdded = false;
                     for (i of result.blockedchannelids){
                         if (url.toLowerCase().includes(i.channelpageurl.toLowerCase()) || url.toLowerCase().includes(i.channelid.toLowerCase()) || processedChannelList.includes(channelName)){
-                            channeladded = true;
+                            channelAdded = true;
                         } 
                     }
 
@@ -364,7 +367,7 @@ setInterval(function(){
                         header.querySelector("#addChannel").title = ""
                     }
 
-                    if (channeladded){
+                    if (channelAdded){
                         if (header.querySelector("#addChannel").innerHTML != "Added to List"){
                             header.querySelector("#addChannel").innerHTML = "Added to List"
                         }
@@ -379,7 +382,7 @@ setInterval(function(){
                     var shelves = document.querySelectorAll("ytd-shelf-renderer")
                     var sectionRenderers = document.querySelectorAll("ytd-item-section-renderer")
                     var richGridRenderers = document.querySelectorAll("ytd-rich-grid-renderer")
-                    var muteButton = document.querySelector(".ytp-chrome-bottom").querySelector(".ytp-volume-area").querySelector("button")
+                    var pauseButton = document.querySelector("#primary") ? document.querySelector("#primary").querySelector(".ytp-play-button") : undefined
                     if (result.blacklisted){
                         if (processedChannelList.includes(channelName)){
                             
@@ -394,9 +397,9 @@ setInterval(function(){
                             for (i of richGridRenderers){
                                 i.style.display = 'none'
                             }
-                            if (muteButton)
-                            if (!muteButton.getAttribute("title").includes("Unmute")){
-                                muteButton.click()
+                            if (pauseButton)
+                            if (pauseButton.getAttribute("title").includes("Pause")){
+                                pauseButton.click()
                             }
                         } else {
                             for (i of shelves){
@@ -410,10 +413,10 @@ setInterval(function(){
                             for (i of richGridRenderers){
                                 i.style.display = 'block'
                             }
-                            if (muteButton)
-                            if (muteButton.getAttribute("title").includes("Unmute")){
-                                muteButton.click()
-                            }
+                            // if (pauseButton)
+                            // if (pauseButton.getAttribute("title").includes("Play")){
+                            //     pauseButton.click()
+                            // }
                         }
                     } else {
                         if (!processedChannelList.includes(channelName)){
@@ -429,9 +432,9 @@ setInterval(function(){
                             for (i of richGridRenderers){
                                 i.style.display = 'none'
                             }
-                            if (muteButton)
-                            if (!muteButton.getAttribute("title").includes("Unmute")){
-                                muteButton.click()
+                            if (pauseButton)
+                            if (pauseButton.getAttribute("title").includes("Pause")){
+                                pauseButton.click()
                             }
                         } else {
                             for (i of shelves){
@@ -445,10 +448,10 @@ setInterval(function(){
                             for (i of richGridRenderers){
                                 i.style.display = 'block'
                             }
-                            if (muteButton)
-                            if (muteButton.getAttribute("title").includes("Unmute")){
-                                muteButton.click()
-                            }
+                            // if (pauseButton)
+                            // if (pauseButton.getAttribute("title").includes("Play")){
+                            //     pauseButton.click()
+                            // }
                         }
                     }
                 }
