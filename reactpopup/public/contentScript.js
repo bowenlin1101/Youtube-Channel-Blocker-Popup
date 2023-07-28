@@ -354,11 +354,11 @@ setInterval(function(){
                 if (result.blockedchannelids != undefined){
                     var channelAdded = false;
                     for (i of result.blockedchannelids){
-                        if (url.toLowerCase().includes(i.channelpageurl.toLowerCase()) || url.toLowerCase().includes(i.channelid.toLowerCase()) || processedChannelList.includes(channelName)){
+                         if ( //url.toLowerCase().includes(i.channelpageurl.toLowerCase()) || url.toLowerCase().includes(i.channelid.toLowerCase()) ||
+                            processedChannelList.includes(channelName)){
                             channelAdded = true;
                         } 
                     }
-
                     if (!result.unlocked && header.querySelector("#addChannel").getAttribute("disabled") == null){
                         header.querySelector("#addChannel").setAttribute("disabled","")
                         header.querySelector("#addChannel").parentNode.style.cursor = "not-allowed";
