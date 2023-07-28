@@ -225,6 +225,7 @@ setInterval(function(){
                     }
                 }
             }
+            //Search queries
         } else if (url.includes("www.youtube.com/results?search_query")){
             if (result.blockShorts){
                 var shortsContainer = document.querySelector("ytd-reel-shelf-renderer");
@@ -315,6 +316,7 @@ setInterval(function(){
                     }
                 }
             }
+            //Youtube Channel Pages
         } else {
             if (url.includes("www.youtube.com/c/") || url.includes("youtube.com/channel/")|| url.includes("youtube.com/user") || url.includes("youtube.com/@")){
                 var header = document.querySelector("#inner-header-container")
@@ -413,10 +415,6 @@ setInterval(function(){
                             for (i of richGridRenderers){
                                 i.style.display = 'block'
                             }
-                            // if (pauseButton)
-                            // if (pauseButton.getAttribute("title").includes("Play")){
-                            //     pauseButton.click()
-                            // }
                         }
                     } else {
                         if (!processedChannelList.includes(channelName)){
@@ -448,13 +446,32 @@ setInterval(function(){
                             for (i of richGridRenderers){
                                 i.style.display = 'block'
                             }
-                            // if (pauseButton)
-                            // if (pauseButton.getAttribute("title").includes("Play")){
-                            //     pauseButton.click()
-                            // }
                         }
                     }
                 }
+                //Feed and Gaming pages
+            } else if (url.includes("youtube.com/feed") || url.includes("youtube.com/gaming")){
+                var shelves = document.querySelectorAll("ytd-shelf-renderer")
+                var sectionRenderers = document.querySelectorAll("ytd-item-section-renderer")
+                var richGridRenderers = document.querySelectorAll("ytd-rich-grid-renderer")
+                var pauseButton = document.querySelector("#primary") ? document.querySelector("#primary").querySelector(".ytp-play-button") : undefined
+                    
+                for (i of shelves){
+                    i.style.display = 'none'
+                }
+
+                for (i of sectionRenderers){
+                    i.style.display = 'none'
+                }
+
+                for (i of richGridRenderers){
+                    i.style.display = 'none'
+                }
+                if (pauseButton)
+                if (pauseButton.getAttribute("title").includes("Pause")){
+                    pauseButton.click()
+                }
+                //Youtube Home page
             } else {
                 //put the channel name and id of individual videos recommended on the Youtube home screen where it is easily accessible - up to the parent element
                 for (i of document.querySelectorAll("#avatar-link")){
@@ -526,7 +543,7 @@ setInterval(function(){
                     }
                 }
             }
-
+            // remove shorts sliders and side bar buttons
             if (result.blockShorts){
                 if (document.querySelectorAll("ytd-rich-shelf-renderer[is-shorts]")[0])
                     document.querySelectorAll("ytd-rich-shelf-renderer[is-shorts]")[0].style.display = 'none';
@@ -535,7 +552,13 @@ setInterval(function(){
                     if (topSidebar)
                     topSidebar.querySelector("#items").childNodes[1].style.display = 'none'
                 }
+                var shortsIcon = document.querySelector("ytd-mini-guide-entry-renderer[aria-label=Shorts]")
+                if (shortsIcon)
+                shortsIcon.remove()
             }
+            // remove Explore section from sidebar
+            if (document.querySelectorAll("ytd-guide-section-renderer")[2])
+            document.querySelectorAll("ytd-guide-section-renderer")[2].style.display = "none";
                 // check whether the player queue is open
             if (document.querySelector("ytd-miniplayer")){
                 if (document.querySelector("ytd-miniplayer").querySelector("video")){
