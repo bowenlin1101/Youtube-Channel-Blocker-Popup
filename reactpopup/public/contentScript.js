@@ -450,7 +450,7 @@ setInterval(function(){
                     }
                 }
                 //Feed and Gaming pages
-            } else if (url.includes("youtube.com/feed") || url.includes("youtube.com/gaming")){
+            } else if ((url.includes("youtube.com/feed") || url.includes("youtube.com/gaming")) && !url.includes("youtube.com/feed/history") && !url.includes("youtube.com/feed/library")&& !url.includes("youtube.com/feed/subscriptions")){
                 var shelves = document.querySelectorAll("ytd-shelf-renderer")
                 var sectionRenderers = document.querySelectorAll("ytd-item-section-renderer")
                 var richGridRenderers = document.querySelectorAll("ytd-rich-grid-renderer")
