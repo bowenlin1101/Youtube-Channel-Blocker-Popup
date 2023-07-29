@@ -19,22 +19,22 @@ setInterval(function(){
                 chrome.storage.local.set({unlocked: syncResult.unlocked})
             }
             if(syncResult.blacklisted === undefined && localResult.blacklisted === undefined) {
-                chrome.storage.local.set({blacklisted: false})
+                chrome.storage.local.set({blacklisted: true})
             } else if (syncResult.blacklisted !== undefined && localResult.blacklisted === undefined) {
                 chrome.storage.local.set({blacklisted: syncResult.blacklisted})
             }
             if(syncResult.blockShorts === undefined && localResult.blockShorts === undefined) {
-                chrome.storage.local.set({blockShorts: false})
+                chrome.storage.local.set({blockShorts: true})
             } else if (syncResult.blockShorts !== undefined && localResult.blockShorts === undefined) {
                 chrome.storage.local.set({blockShorts: syncResult.blockShorts})
             }
             if(syncResult.blockSearch === undefined && localResult.blockSearch === undefined) {
-                chrome.storage.local.set({blockSearch: false})
+                chrome.storage.local.set({blockSearch: true})
             } else if (syncResult.blockSearch !== undefined && localResult.blockSearch === undefined) {
                 chrome.storage.local.set({blockSearch: syncResult.blockSearch})
             }
             if(syncResult.blockChannels === undefined && localResult.blockChannels === undefined) {
-                chrome.storage.local.set({blockChannels: false})
+                chrome.storage.local.set({blockChannels: true})
             } else if (syncResult.blockChannels !== undefined && localResult.blockChannels === undefined) {
                 chrome.storage.local.set({blockChannels: syncResult.blockChannels})
             }
