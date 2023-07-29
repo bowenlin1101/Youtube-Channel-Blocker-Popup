@@ -66,7 +66,6 @@ setInterval(function(){
     chrome.storage.local.get(['blacklisted','blockShorts','blockSearch','blockChannels','blockedchannelids','unlocked','removeBlockedElements'], function(result) {
         //initialize processed list for easy comparison
         var processedChannelList = [];
-
         var processedChannelIds = [];
         if (result.blockedchannelids != undefined && result.blockedchannelids != []){
             result.blockedchannelids.forEach(object => {
@@ -148,8 +147,9 @@ setInterval(function(){
                 }
                 for (i of document.querySelectorAll("#text")) {
                     if(i.classList.contains("ytd-channel-name") ){
+                        //TODO Fix this ungodly sight
                         var parent = i.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode
-                        if (parent.tagName == "YTD-COMPACT-VIDEO-RENDERER" && parent.display != "none"){
+                        if (parent.tagName == "YTD-COMPACT-VIDEO-RENDERER" && parent.style.display != "none"){
                             if (result.blacklisted){
                                 if (processedChannelList.includes(i.innerHTML.toLowerCase().replace(/ /g,''))){
                                     parent.style.display="none"
@@ -167,6 +167,7 @@ setInterval(function(){
                 if (document.getElementsByClassName("ytp-endscreen-content")[0]){
                     if (document.getElementsByClassName("ytp-endscreen-content")[0].childNodes != []){
                         for (i of document.getElementsByClassName("ytp-endscreen-content")[0].childNodes){
+                            //TODO Fix this ungodly sight
                             var processedString = i.childNodes[1].childNodes[0].childNodes[0].childNodes[1].innerHTML.split("•")[0].toLowerCase().replace(/ /g, "")
                             if (result.blacklisted){
                                 if (processedChannelList.includes(processedString)){
@@ -198,7 +199,7 @@ setInterval(function(){
                     }   
                 }  
             }
-        // if the person is not actively watching a video
+        // Block shorts
         } else if (url.includes("www.youtube.com/shorts/")){
             if (result.blockShorts){
                 function blockShorts(playercontainer){
@@ -346,9 +347,9 @@ setInterval(function(){
                 }
                 var identifier = url.split("/")[url.split('/').length-1]
                 if (identifier != "streams" && identifier != "videos" && identifier != "playlists" && identifier != "community" && identifier != "store" && identifier != "channels" && identifier != "channels" && identifier != "about") {
-                    document.querySelector("#addChannel").style.display = "inline-block";
+                    document.querySelector("#addChannel").style.visibility = "visible";
                 } else {
-                    document.querySelector("#addChannel").style.display = "none";
+                    document.querySelector("#addChannel").style.visibility = "hidden";
                 }
 
                 if (result.blockedchannelids != undefined){
@@ -387,17 +388,14 @@ setInterval(function(){
                     var pauseButton = document.querySelector("#primary") ? document.querySelector("#primary").querySelector(".ytp-play-button") : undefined
                     if (result.blacklisted){
                         if (processedChannelList.includes(channelName)){
-                            
                             for (i of shelves){
-                                i.style.display = 'none'
+                                i.style.visibility = 'hidden'
                             }
-
                             for (i of sectionRenderers){
-                                i.style.display = 'none'
+                                i.style.visibility = 'hidden'
                             }
-
                             for (i of richGridRenderers){
-                                i.style.display = 'none'
+                                i.style.visibility = 'hidden'
                             }
                             if (pauseButton)
                             if (pauseButton.getAttribute("title").includes("Pause")){
@@ -405,30 +403,25 @@ setInterval(function(){
                             }
                         } else {
                             for (i of shelves){
-                                i.style.display = 'block'
+                                i.style.visibility = 'visible'
                             }
-
                             for (i of sectionRenderers){
-                                i.style.display = 'block'
+                                i.style.visibility = 'visible'
                             }
-
                             for (i of richGridRenderers){
-                                i.style.display = 'block'
+                                i.style.visibility = 'visible'
                             }
                         }
                     } else {
                         if (!processedChannelList.includes(channelName)){
-                            
                             for (i of shelves){
-                                i.style.display = 'none'
+                                i.style.visibility = 'hidden'
                             }
-
                             for (i of sectionRenderers){
-                                i.style.display = 'none'
+                                i.style.visibility = 'hidden'
                             }
-
                             for (i of richGridRenderers){
-                                i.style.display = 'none'
+                                i.style.visibility = 'hidden'
                             }
                             if (pauseButton)
                             if (pauseButton.getAttribute("title").includes("Pause")){
@@ -436,51 +429,68 @@ setInterval(function(){
                             }
                         } else {
                             for (i of shelves){
-                                i.style.display = 'block'
+                                i.style.visibility = 'visible'
                             }
 
                             for (i of sectionRenderers){
-                                i.style.display = 'block'
+                                i.style.visibility = 'visible'
                             }
 
                             for (i of richGridRenderers){
-                                i.style.display = 'block'
+                                i.style.visibility = 'visible'
                             }
                         }
                     }
                 }
                 //Feed and Gaming pages
-            } else if ((url.includes("youtube.com/feed") || url.includes("youtube.com/gaming")) && !url.includes("youtube.com/feed/history") && !url.includes("youtube.com/feed/library")&& !url.includes("youtube.com/feed/subscriptions")){
+            } else if ((url.includes("youtube.com/feed") || url.includes("youtube.com/gaming")) && !url.includes("youtube.com/feed/history") && !url.includes("youtube.com/feed/library") && !url.includes("youtube.com/feed/subscriptions")){
                 var shelves = document.querySelectorAll("ytd-shelf-renderer")
                 var sectionRenderers = document.querySelectorAll("ytd-item-section-renderer")
                 var richGridRenderers = document.querySelectorAll("ytd-rich-grid-renderer")
-                var pauseButton = document.querySelector("#primary") ? document.querySelector("#primary").querySelector(".ytp-play-button") : undefined
-                    
+                var pauseButton = document.querySelector("#primary") ? document.querySelector("#primary").querySelector(".ytp-play-button") : undefined 
                 for (i of shelves){
-                    i.style.display = 'none'
+                    i.style.visibility = 'hidden'
                 }
-
                 for (i of sectionRenderers){
-                    i.style.display = 'none'
+                    i.style.visibility = 'hidden'
                 }
-
                 for (i of richGridRenderers){
-                    i.style.display = 'none'
+                    i.style.visibility = 'hidden'
                 }
                 if (pauseButton)
                 if (pauseButton.getAttribute("title").includes("Pause")){
                     pauseButton.click()
                 }
-                //Youtube Home page
-            } else {
+            //History, Library, and Subscriptions page
+            } else if (url.includes("youtube.com/feed/history") || url.includes("youtube.com/feed/library")){
+                var shelves = document.querySelectorAll("ytd-shelf-renderer")
+                var sectionRenderers = document.querySelectorAll("ytd-item-section-renderer")
+                var richGridRenderers = document.querySelectorAll("ytd-rich-grid-renderer")
+                var pauseButton = document.querySelector("#primary") ? document.querySelector("#primary").querySelector(".ytp-play-button") : undefined
+                for (i of shelves){
+                    if (i.style.visibility = 'hidden')
+                    i.style.visibility = 'visible'
+                }
+                for (i of sectionRenderers){
+                    if (i.style.visibility = 'hidden')
+                    i.style.visibility = 'visible'
+                }
+                for (i of richGridRenderers){
+                    if (i.style.visibility = 'hidden')
+                    i.style.visibility = 'visible'
+                }
+            //Youtube Home page
+            } else{
                 //put the channel name and id of individual videos recommended on the Youtube home screen where it is easily accessible - up to the parent element
                 for (i of document.querySelectorAll("#avatar-link")){
                     if (i.getAttribute("data-channelname") == undefined){
                         var channelname = i.title.toLowerCase().replace(/ /g,'')
+                        //TODO Potential source of error in the future
                         i.parentNode.parentNode.parentNode.parentNode.parentNode.setAttribute("data-channelname", channelname)
                     }
                     if (i.getAttribute("data-channelid") == undefined){
                         var channelid = i.href;
+                        //TODO Potential source of error in the future
                         i.parentNode.parentNode.parentNode.parentNode.parentNode.setAttribute("data-channelid", channelid)
                     }
                 }
@@ -554,7 +564,19 @@ setInterval(function(){
                 }
                 var shortsIcon = document.querySelector("ytd-mini-guide-entry-renderer[aria-label=Shorts]")
                 if (shortsIcon)
-                shortsIcon.remove()
+                shortsIcon.style.display = "none"
+                for (i of document.querySelectorAll("#dismissible.ytd-rich-shelf-renderer")){
+                    i.remove()
+                }
+            } else {
+                if (document.querySelectorAll("ytd-guide-section-renderer")){
+                    var topSidebar = document.querySelectorAll("ytd-guide-section-renderer")[0]
+                    if (topSidebar)
+                    topSidebar.querySelector("#items").childNodes[1].style.display = 'inline-block'
+                }
+                var shortsIcon = document.querySelector("ytd-mini-guide-entry-renderer[aria-label=Shorts]")
+                if (shortsIcon)
+                shortsIcon.style.display = "inline-block"
             }
             // remove Explore section from sidebar
             if (document.querySelectorAll("ytd-guide-section-renderer")[2])
