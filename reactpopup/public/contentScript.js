@@ -497,8 +497,12 @@ setInterval(function(){
             }
             // remove shorts sliders and side bar buttons
             if (result.blockShorts){
-                if (document.querySelectorAll("ytd-rich-shelf-renderer[is-shorts]")[0])
-                    document.querySelectorAll("ytd-rich-shelf-renderer[is-shorts]")[0].style.display = 'none';
+                let shortsPanels = document.querySelectorAll("ytd-rich-shelf-renderer[is-shorts]");
+                if (shortsPanels){
+                    for (let i = 0; i < shortsPanels.length; i++){
+                        shortsPanels[i].style.display = 'none';
+                    }
+                }
                 if (document.querySelectorAll("ytd-guide-section-renderer")){
                     var topSidebar = document.querySelectorAll("ytd-guide-section-renderer")[0]
                     if (topSidebar)
